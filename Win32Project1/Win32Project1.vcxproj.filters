@@ -18,6 +18,9 @@
     <Filter Include="Object\Player">
       <UniqueIdentifier>{2c683f4f-a842-4a08-a772-9e1637b69e7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Bullet">
+      <UniqueIdentifier>{02dafffc-dda6-4764-a835-a2a7a46489df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameScene.cpp">
@@ -27,6 +30,9 @@
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="PlayerCharacter.cpp">
       <Filter>Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Object\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +44,9 @@
     </ClInclude>
     <ClInclude Include="PlayerCharacter.h">
       <Filter>Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>Object\Bullet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

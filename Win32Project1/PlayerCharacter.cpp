@@ -7,6 +7,7 @@
 PlayerCharacter::PlayerCharacter()
 {
 	player = new ZeroSprite("Resource/Player/Spaceship.png");
+	SetPos(300, 600);
 
 	PushScene(player);
 }
@@ -23,7 +24,6 @@ void PlayerCharacter::Update(float eTime)
 
 	Input(eTime);
 
-	SetPos(300, 600);
 }
 
 void PlayerCharacter::Render()
@@ -36,15 +36,15 @@ void PlayerCharacter::Render()
 void PlayerCharacter::Input(float eTime)
 {
 	if (ZeroInputMgr->GetKey(VK_UP) == INPUTMGR_KEYON) {
-		player->AddPosY(-150 * eTime);
+		AddPosY(-150 * eTime);
 	}
 	if (ZeroInputMgr->GetKey(VK_LEFT) == INPUTMGR_KEYON) {
-		player->AddPosX(-150 * eTime);
+		AddPosX(-150 * eTime);
 	}
 	if (ZeroInputMgr->GetKey(VK_DOWN) == INPUTMGR_KEYON) {
-		player->AddPosY(150 * eTime);
+		AddPosY(150 * eTime);
 	}
 	if (ZeroInputMgr->GetKey(VK_RIGHT) == INPUTMGR_KEYON) {
-		player->AddPosX(150 * eTime);
+		AddPosX(150 * eTime);
 	}
 }
