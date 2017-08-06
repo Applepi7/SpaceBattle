@@ -6,7 +6,7 @@
 #include "ZeroInputManager.h"
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 5.0f),isShooting(true)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 2.0f),isShooting(true)
 {
 	p = new PlayerCharacter();
 
@@ -51,8 +51,8 @@ void GameScene::Update(float eTime)
 	SpawnEnemy(eTime);
 	EnemyShooting(eTime);
 
+	EnemyDead();
 	CheckOut();
-
 }
 
 void GameScene::Render()
@@ -121,9 +121,32 @@ void GameScene::SpawnEnemy(float eTime)
 		PushScene(e);
 
 		e->SetPos(Random(0, 700 - e->Width()), 0);
-
+		
 		EspawnTimer.first = 0;
 
+	}
+}
+
+void GameScene::EnemyDead()
+{
+	for (auto e = enemyList.begin(); e != enemyList.end();) {
+		for (auto b = PbulletList.begin(); b != PbulletList.end();) {
+			if ((*e)->enemy->IsOverlapped((*b)->bullet1) || (*e)->enemy->IsOverlapped((*b)->bullet2)) {
+				PopScene(*e);
+				PopScene(*b);
+
+				enemyList.erase(e++);
+				PbulletList.erase(b++);
+				if (b == PbulletList.end()) break;
+				if (e == enemyList.end()) break;
+			}
+			else {
+				b++;
+				if (b == PbulletList.end()) break;
+			}
+		}
+		e++;
+		if (e == enemyList.end()) break;
 	}
 }
 

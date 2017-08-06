@@ -36,6 +36,7 @@ private:
 	void PlayerShooting(float eTime);
 	void EnemyShooting(float eTime);
 	void SpawnEnemy(float eTime);
+	void EnemyDead();
 	void CheckOut();
 
 public:
