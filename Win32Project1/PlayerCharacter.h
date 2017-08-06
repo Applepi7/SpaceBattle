@@ -8,7 +8,7 @@ class PlayerCharacter :
 	public ZeroIScene
 {
 private:
-
+	void Input(float eTime);
 
 
 public:
@@ -20,6 +20,5 @@ public:
 	void Update(float eTime) override;
 	void Render() override;
 
-	void Input(float eTime);
 };
 

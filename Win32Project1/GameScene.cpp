@@ -4,7 +4,7 @@
 #include "ZeroInputManager.h"
 
 
-GameScene::GameScene()
+GameScene::GameScene() : shootingTimer(0.f, .5f), isShooting(true)
 {
 	p = new PlayerCharacter();
 
@@ -31,8 +31,11 @@ void GameScene::Update(float eTime)
 	}
 	p->Update(eTime);
 
-	Shooting();
-	// CheckOut();
+	shootingTimer.first += eTime;
+
+	AutoShooting(eTime);
+
+	CheckOut();
 
 }
 
@@ -44,31 +47,40 @@ void GameScene::Render()
 	for (auto b : bulletList) {
 		b->Render();
 	}
+
 	p->Render();
 }
 
 void GameScene::Shooting()
 {
-	if (ZeroInputMgr->GetKey(VK_CONTROL) == INPUTMGR_KEYDOWN) {
+	Bullet* b = new Bullet();
 
-		Bullet* b = new Bullet();
+	b->bullet1->SetPos(p->Pos().x, p->Pos().y + 10);
+	b->bullet2->SetPos(p->Pos().x + 80, p->Pos().y + 10);
 
-		b->bullet1->SetPos(p->Pos().x, p->Pos().y + 10);
-		b->bullet2->SetPos(p->Pos().x + 80, p->Pos().y + 10);
+	bulletList.push_back(b);
+	PushScene(b);
+}
 
-		bulletList.push_back(b);
-		PushScene(b);
+void GameScene::AutoShooting(float eTime)
+{
+	shootingTimer.first += eTime;
+
+	if (shootingTimer.first >= shootingTimer.second) {
+		Shooting();
+		shootingTimer.first = 0;
 	}
 }
 
-//void GameScene::CheckOut()
-//{
-//	for (auto b = bulletList.begin(); b != bulletList.end();) {
-//		if ((*b)->Pos().y > 0) {
-//			PopScene(*b);
-//			bulletList.erase(b++);
-//		}
-//		else b++;
-//	}
-//
-//}
+void GameScene::CheckOut()
+{
+	for (auto b = bulletList.begin(); b != bulletList.end();) {
+
+		if ((*b)->Pos().y < 0) {
+			PopScene(*b);
+			bulletList.erase(b++);
+		}
+		else b++;
+	}
+
+}

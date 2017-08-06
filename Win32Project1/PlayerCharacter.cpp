@@ -7,9 +7,10 @@
 PlayerCharacter::PlayerCharacter()
 {
 	player = new ZeroSprite("Resource/Player/Spaceship.png");
+	PushScene(player);
+
 	SetPos(300, 600);
 
-	PushScene(player);
 }
 
 

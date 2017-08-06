@@ -19,11 +19,16 @@ private:
 	list<Bullet*> bulletList;
 
 
+	pair<float, float> shootingTimer;
+
+	bool isShooting;
+
 	void Update(float eTime) override;
 	void Render() override;
 
 	void Shooting();
-	// void CheckOut();
+	void AutoShooting(float eTime);
+	void CheckOut();
 
 public:
 	GameScene();
