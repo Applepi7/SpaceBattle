@@ -4,13 +4,15 @@
 #include "ZeroInputManager.h"
 
 
-GameScene::GameScene() : shootingTimer(0.f, .5f), isShooting(true)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), isShooting(true)
 {
 	p = new PlayerCharacter();
+	e = new Enemy();
 
 	background = new ZeroSprite("Resource/Background/space.png");
 
 	PushScene(p);
+	PushScene(e);
 
 	PushScene(background);
 }
@@ -26,14 +28,19 @@ void GameScene::Update(float eTime)
 	ZeroIScene::Update(eTime);
 	background->Update(eTime);
 
-	for (auto b : bulletList) {
+	for (auto b : PbulletList) {
 		b->Update(eTime);
 	}
+	for (auto eB : EbulletList) {
+		eB->Update(eTime);
+	}
 	p->Update(eTime);
+	e->Update(eTime);
 
-	shootingTimer.first += eTime;
+	playerShootingT.first += eTime;
 
-	AutoShooting(eTime);
+	PlayerShooting(eTime);
+	EnemyShooting(eTime);
 
 	CheckOut();
 
@@ -44,41 +51,58 @@ void GameScene::Render()
 	ZeroIScene::Render();
 	background->Render();
 
-	for (auto b : bulletList) {
-		b->Render();
+	for (auto pB : PbulletList) {
+		pB->Render();
+	}
+	for (auto eB : EbulletList) {
+		eB->Render();
 	}
 
+	e->Render();
 	p->Render();
 }
 
-void GameScene::Shooting()
+void GameScene::PlayerShooting(float eTime)
 {
-	Bullet* b = new Bullet();
+	playerShootingT.first += eTime;
 
-	b->bullet1->SetPos(p->Pos().x, p->Pos().y + 10);
-	b->bullet2->SetPos(p->Pos().x + 80, p->Pos().y + 10);
+	if (playerShootingT.first >= playerShootingT.second) {
+		Bullet* b = new Bullet(0);
 
-	bulletList.push_back(b);
-	PushScene(b);
+		b->bullet1->SetPos(p->Pos().x, p->Pos().y + 10);
+		b->bullet2->SetPos(p->Pos().x + 80, p->Pos().y + 10);
+
+		PbulletList.push_back(b);
+		PushScene(b);
+
+		playerShootingT.first = 0;
+	}
 }
 
-void GameScene::AutoShooting(float eTime)
+void GameScene::EnemyShooting(float eTime)
 {
-	shootingTimer.first += eTime;
+	enemyShootingT.first += eTime;
 
-	if (shootingTimer.first >= shootingTimer.second) {
-		Shooting();
-		shootingTimer.first = 0;
+	if (enemyShootingT.first >= enemyShootingT.second) {
+		Bullet* b = new Bullet(1);
+
+		b->bullet1->SetPos(e->Pos().x, e->Pos().y + 50);
+		b->bullet2->SetPos(e->Pos().x + 80, e->Pos().y + 50);
+
+		EbulletList.push_back(b);
+		PushScene(b);
+
+		enemyShootingT.first = 0;
 	}
 }
 
 void GameScene::CheckOut()
 {
-	for (auto b = bulletList.begin(); b != bulletList.end();) {
+	for (auto b = PbulletList.begin(); b != PbulletList.end();) {
 
 		if ((*b)->Pos().y < 0) {
 			PopScene(*b);
-			bulletList.erase(b++);
+			PbulletList.erase(b++);
 		}
 		else b++;
 	}

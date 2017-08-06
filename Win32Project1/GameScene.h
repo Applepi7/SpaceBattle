@@ -3,6 +3,7 @@
 #include "ZeroSprite.h"
 
 #include "PlayerCharacter.h"
+#include "Enemy.h"
 #include "Bullet.h"
 
 #include <list>
@@ -16,18 +17,22 @@ private:
 	ZeroSprite* background;
 
 	PlayerCharacter* p;
-	list<Bullet*> bulletList;
+	Enemy* e;
+	list<Bullet*> PbulletList;
+	list<Bullet*> EbulletList;
 
 
-	pair<float, float> shootingTimer;
+	pair<float, float> playerShootingT;
+	pair<float, float> enemyShootingT;
+	
 
 	bool isShooting;
 
 	void Update(float eTime) override;
 	void Render() override;
 
-	void Shooting();
-	void AutoShooting(float eTime);
+	void PlayerShooting(float eTime);
+	void EnemyShooting(float eTime);
 	void CheckOut();
 
 public:

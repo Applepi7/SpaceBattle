@@ -15,11 +15,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Object\Player">
-      <UniqueIdentifier>{2c683f4f-a842-4a08-a772-9e1637b69e7d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Object\Bullet">
       <UniqueIdentifier>{02dafffc-dda6-4764-a835-a2a7a46489df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Units">
+      <UniqueIdentifier>{14a4551f-429a-4dee-8319-7e34143fffc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Units\Enemy">
+      <UniqueIdentifier>{31e696ad-609f-4dae-a80f-a2a91393bad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Units\Player">
+      <UniqueIdentifier>{2c683f4f-a842-4a08-a772-9e1637b69e7d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,10 +35,13 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="PlayerCharacter.cpp">
-      <Filter>Object\Player</Filter>
+      <Filter>Object\Units\Player</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>Object\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Object\Units\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,10 +52,16 @@
       <Filter>Scens\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="PlayerCharacter.h">
-      <Filter>Object\Player</Filter>
+      <Filter>Object\Units\Player</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>Object\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Object\Units\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

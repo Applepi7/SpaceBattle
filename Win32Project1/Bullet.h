@@ -6,15 +6,20 @@
 class Bullet :
 	public ZeroIScene
 {
+
 private:
-	void MoveY(float eTime);
+	void MoveY(float eTime, int TYPE);
+
+	int TYPE;
+	float bulletSpeed;
 
 public:
-	Bullet();
+	Bullet(int TYPE);
 	~Bullet();
 
 	void Update(float eTime) override;
 	void Render() override;
+
 
 	ZeroSprite* bullet1;
 	ZeroSprite* bullet2;
