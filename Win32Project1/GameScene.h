@@ -15,15 +15,17 @@ class GameScene :
 {
 private:
 	ZeroSprite* background;
+	ZeroSprite* ship;
 
 	PlayerCharacter* p;
-	Enemy* e;
+	list<Enemy*> enemyList;
 	list<Bullet*> PbulletList;
 	list<Bullet*> EbulletList;
 
 
 	pair<float, float> playerShootingT;
 	pair<float, float> enemyShootingT;
+	pair<float, float> EspawnTimer;
 	
 
 	bool isShooting;
@@ -33,6 +35,7 @@ private:
 
 	void PlayerShooting(float eTime);
 	void EnemyShooting(float eTime);
+	void SpawnEnemy(float eTime);
 	void CheckOut();
 
 public:

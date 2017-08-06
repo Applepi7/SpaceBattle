@@ -8,8 +8,6 @@ Enemy::Enemy() : speed(150), movingTimer(0.0f, 1.0f)
 {
 	enemy = new ZeroSprite("Resource/Enemy/enemy_01.png");
 	PushScene(enemy);
-
-	SetPos(300, 0);
 }
 
 

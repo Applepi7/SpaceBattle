@@ -36,16 +36,24 @@ void PlayerCharacter::Render()
 
 void PlayerCharacter::Input(float eTime)
 {
-	if (ZeroInputMgr->GetKey(VK_UP) == INPUTMGR_KEYON) {
-		AddPosY(-150 * eTime);
+	if (Pos().y > 0) {
+		if (ZeroInputMgr->GetKey(VK_UP) == INPUTMGR_KEYON) {
+			AddPosY(-150 * eTime);
+		}
 	}
-	if (ZeroInputMgr->GetKey(VK_LEFT) == INPUTMGR_KEYON) {
-		AddPosX(-150 * eTime);
+	if (Pos().x > 0) {
+		if (ZeroInputMgr->GetKey(VK_LEFT) == INPUTMGR_KEYON) {
+			AddPosX(-150 * eTime);
+		}
 	}
-	if (ZeroInputMgr->GetKey(VK_DOWN) == INPUTMGR_KEYON) {
-		AddPosY(150 * eTime);
+	if (Pos().y < 950 - player->Height()) {
+		if (ZeroInputMgr->GetKey(VK_DOWN) == INPUTMGR_KEYON) {
+			AddPosY(150 * eTime);
+		}
 	}
-	if (ZeroInputMgr->GetKey(VK_RIGHT) == INPUTMGR_KEYON) {
-		AddPosX(150 * eTime);
+	if (Pos().x < 700 - player->Width()) {
+		if (ZeroInputMgr->GetKey(VK_RIGHT) == INPUTMGR_KEYON) {
+			AddPosX(150 * eTime);
+		}
 	}
 }
