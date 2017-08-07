@@ -17,6 +17,8 @@ public:
 
 	ZeroSprite* player;
 
+	float health;
+
 	void Update(float eTime) override;
 	void Render() override;
 

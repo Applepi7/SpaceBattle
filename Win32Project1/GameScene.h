@@ -22,6 +22,8 @@ private:
 
 	list<Bullet*> PbulletList;
 	list<Bullet*> E1bulletList;
+	list<Bullet*> E2bulletList;
+	list<Bullet*> E3bulletList;
 
 
 	pair<float, float> playerShootingT;
@@ -41,8 +43,8 @@ private:
 	void PlayerShooting(float eTime);
 	void EnemyShooting(float eTime);
 	void SpawnEnemy(float eTime);
-	void EnemyDead();
-	void AttackPlayer();
+	void EnemyDeath();
+	void PlayerDamaged();
 	void CheckOut();
 	void MovingBackground(float eTime);
 

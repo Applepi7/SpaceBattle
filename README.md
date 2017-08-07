@@ -5,8 +5,10 @@ Defense Space Shooting Game
 
 
 <h2>이미지 출처</h2>
->우주선 : http://millionthvector.blogspot.kr/p/free-sprites_12.html<br/>
-https://www.pinterest.co.kr/pin/436497388859578074/<br/><br/>
+>우주선
+<br/>http://millionthvector.blogspot.kr/p/free-sprites_12.html<br/>
+https://www.pinterest.co.kr/pin/436497388859578074/<br/>
+http://www.clker.com/clipart-circle-23.html23.html<br/>
 
 >배경
-https://www.youtube.com/watch?v=M2uBtg_PzKg
+<br/>https://www.youtube.com/watch?v=M2uBtg_PzKg

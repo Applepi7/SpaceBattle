@@ -7,7 +7,7 @@
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f),isShooting(true), isAlive(true)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 1.0f),isShooting(true), isAlive(true)
 {
 	p = new PlayerCharacter();
 	
@@ -39,6 +39,12 @@ void GameScene::Update(float eTime)
 	for (auto eB : E1bulletList) {
 		eB->Update(eTime);
 	}
+	for (auto eB : E2bulletList) {
+		eB->Update(eTime);
+	}
+	for (auto eB : E3bulletList) {
+		eB->Update(eTime);
+	}
 
 	for (auto e : enemyList) {
 		e->Update(eTime);
@@ -53,8 +59,8 @@ void GameScene::Update(float eTime)
 	SpawnEnemy(eTime);
 	EnemyShooting(eTime);
 
-	EnemyDead();
-	AttackPlayer();
+	EnemyDeath();
+	PlayerDamaged();
 	CheckOut();
 }
 
@@ -69,6 +75,12 @@ void GameScene::Render()
 		pB->Render();
 	}
 	for (auto eB : E1bulletList) {
+		eB->Render();
+	}
+	for (auto eB : E2bulletList) {
+		eB->Render();
+	}
+	for (auto eB : E3bulletList) {
 		eB->Render();
 	}
 
@@ -104,14 +116,31 @@ void GameScene::EnemyShooting(float eTime)
 	for (auto e : enemyList) {
 		enemyShootingT.first += eTime;
 
-
 		if (enemyShootingT.first >= enemyShootingT.second) {
-			
-			Bullet* b = new Bullet(1);
 
-			b->bullet1->SetPos(e->Pos().x + (0.5f * e->enemy->Width()), e->Pos().y + e->enemy->Height());
-			E1bulletList.push_back(b);
-			PushScene(b);
+			Bullet* b;
+
+			if (e->eTYPE == 0) {	// BLACK
+				b = new Bullet(1);
+				b->bullet1->SetPos(e->Pos().x, e->Pos().y + e->enemy->Height());
+				b->bullet2->SetPos(e->Pos().x + e->enemy->Width(), e->Pos().y + e->enemy->Height());
+				E1bulletList.push_back(b);
+				PushScene(b);
+			}
+			if (e->eTYPE == 1) {	// RED
+				b = new Bullet(2);
+				b->bullet1->SetPos(e->Pos().x, e->Pos().y + e->enemy->Height() - 20);
+				b->bullet2->SetPos(e->Pos().x + (0.5f * e->enemy->Width()), e->Pos().y + e->enemy->Height() + 30);
+				b->bullet3->SetPos(e->Pos().x + e->enemy->Width(), e->Pos().y + e->enemy->Height() - 20);
+				E2bulletList.push_back(b);
+				PushScene(b);
+			}
+			if (e->eTYPE == 2) {	// GREY
+				b = new Bullet(3);
+				b->bullet1->SetPos(e->Pos().x + (0.5f * e->enemy->Width()), e->Pos().y + e->enemy->Height());
+				E3bulletList.push_back(b);
+				PushScene(b);
+			}
 
 			enemyShootingT.first = 0;
 		}
@@ -126,15 +155,15 @@ void GameScene::SpawnEnemy(float eTime)
 
 		Enemy* e;
 
-		randomINT = Random(1, 3);
+		randomINT = Random(1, 10);
 
-		if (randomINT == 1) {
+		if (randomINT <= 5) {	// 50%
 			e = new Enemy(0);
 		}
-		else if (randomINT == 2) {
+		else if (randomINT > 5 && randomINT <= 8) {		// 30%
 			e = new Enemy(1);
 		}
-		else if (randomINT == 3) {
+		else {		// 20%
 			e = new Enemy(2);
 		}
 
@@ -148,7 +177,7 @@ void GameScene::SpawnEnemy(float eTime)
 	}
 }
 
-void GameScene::EnemyDead()
+void GameScene::EnemyDeath()
 {
 	for (auto e = enemyList.begin(); e != enemyList.end();) {
 		for (auto b = PbulletList.begin(); b != PbulletList.end();) {
@@ -171,10 +200,10 @@ void GameScene::EnemyDead()
 	}
 }
 
-void GameScene::AttackPlayer()
+void GameScene::PlayerDamaged()
 {
 	for (auto e1B = E1bulletList.begin(); e1B != E1bulletList.end();) {
-		if (p->player->IsOverlapped((*e1B)->bullet1)) {
+		if (p->player->IsOverlapped((*e1B)->bullet1) || p->player->IsOverlapped((*e1B)->bullet2)) {
 			PopScene(p);
 			PopScene(*e1B);
 			E1bulletList.erase(e1B++);
@@ -183,6 +212,27 @@ void GameScene::AttackPlayer()
 		}
 		else e1B++;
 	}
+	for (auto e2B = E2bulletList.begin(); e2B != E2bulletList.end();) {
+		if (p->player->IsOverlapped((*e2B)->bullet1) || p->player->IsOverlapped((*e2B)->bullet2 || p->player->IsOverlapped((*e2B)->bullet3))) {
+			PopScene(p);
+			PopScene(*e2B);
+			E1bulletList.erase(e2B++);
+
+			isAlive = false;
+		}
+		else e2B++;
+	}
+	for (auto e3B = E3bulletList.begin(); e3B != E3bulletList.end();) {
+		if (p->player->IsOverlapped((*e3B)->bullet1)) {
+			PopScene(p);
+			PopScene(*e3B);
+			E3bulletList.erase(e3B++);
+
+			isAlive = false;
+		}
+		else e3B++;
+	}
+
 }
 
 

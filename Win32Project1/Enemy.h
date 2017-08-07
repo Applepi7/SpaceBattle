@@ -18,14 +18,16 @@ public:
 	Enemy(int eTYPE);
 	~Enemy();
 
+	int eTYPE;
+
 	void Update(float eTime) override;
 	void Render() override;
 
-	enum TYPE {
+	/* enum TYPE {
 		BLACK,
 		RED,
 		GREY
-	};
+	}; */
 
 	ZeroSprite* enemy;
 

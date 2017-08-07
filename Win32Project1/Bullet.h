@@ -23,5 +23,6 @@ public:
 
 	ZeroSprite* bullet1;
 	ZeroSprite* bullet2;
+	ZeroSprite* bullet3;
 };
 
