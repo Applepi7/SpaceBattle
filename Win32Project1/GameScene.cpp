@@ -7,7 +7,7 @@
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 1.0f),isShooting(true), isAlive(true)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f),isShooting(true), isAlive(true)
 {
 	p = new PlayerCharacter();
 	
@@ -104,7 +104,9 @@ void GameScene::EnemyShooting(float eTime)
 	for (auto e : enemyList) {
 		enemyShootingT.first += eTime;
 
+
 		if (enemyShootingT.first >= enemyShootingT.second) {
+			
 			Bullet* b = new Bullet(1);
 
 			b->bullet1->SetPos(e->Pos().x + (0.5f * e->enemy->Width()), e->Pos().y + e->enemy->Height());
@@ -121,7 +123,20 @@ void GameScene::SpawnEnemy(float eTime)
 	EspawnTimer.first += eTime;
 
 	if (EspawnTimer.first >= EspawnTimer.second) {
-		Enemy* e = new Enemy();
+
+		Enemy* e;
+
+		randomINT = Random(1, 3);
+
+		if (randomINT == 1) {
+			e = new Enemy(0);
+		}
+		else if (randomINT == 2) {
+			e = new Enemy(1);
+		}
+		else if (randomINT == 3) {
+			e = new Enemy(2);
+		}
 
 		enemyList.push_back(e);
 		PushScene(e);

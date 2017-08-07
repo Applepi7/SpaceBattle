@@ -32,6 +32,8 @@ private:
 	bool isShooting;
 	bool isAlive;
 
+	float meter;
+	float randomINT;
 
 	void Update(float eTime) override;
 	void Render() override;

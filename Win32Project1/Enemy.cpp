@@ -4,10 +4,24 @@
 
 
 
-Enemy::Enemy() : speed(150), movingTimer(0.0f, 1.0f)
+Enemy::Enemy(int eTYPE) : speed(150), movingTimer(0.0f, 1.0f)
 {
-	enemy = new ZeroSprite("Resource/Enemy/enemy_01.png");
-	PushScene(enemy);
+	switch (eTYPE)
+	{
+	case 0:
+		enemy = new ZeroSprite("Resource/Enemy/enemy_01.png");
+		PushScene(enemy);
+		break;
+	case 1:
+		enemy = new ZeroSprite("Resource/Enemy/enemy_02.png");
+		PushScene(enemy);
+		break;
+	case 2:
+		enemy = new ZeroSprite("Resource/Enemy/enemy_03.png");
+		PushScene(enemy);
+		break;
+	}
+	
 }
 
 

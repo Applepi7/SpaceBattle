@@ -6,6 +6,8 @@
 class Enemy :
 	public ZeroIScene
 {
+
+
 private:
 	float speed;
 	pair<float, float> movingTimer;
@@ -13,12 +15,17 @@ private:
 	void Moving(float eTime);
 
 public:
-	Enemy();
+	Enemy(int eTYPE);
 	~Enemy();
 
 	void Update(float eTime) override;
 	void Render() override;
 
+	enum TYPE {
+		BLACK,
+		RED,
+		GREY
+	};
 
 	ZeroSprite* enemy;
 
