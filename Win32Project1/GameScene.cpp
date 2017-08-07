@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "GameScene.h"
 
+#include "ZeroSoundManager.h"
+
 #include "Global.h"
 
-#include "ZeroInputManager.h"
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, .5f),isShooting(true), shipHP(100.0f)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 1.0f),isShooting(true), isAlive(true)
 {
 	p = new PlayerCharacter();
 	
@@ -16,6 +17,8 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	background2->SetPos(background1->Pos().x, background1->Pos().y + background1->Height());
 
 	PushScene(p);
+
+	ZeroSoundMgr->PushSound("Resource/Sound/pShooting.wav", "pShootingSound");
 }
 
 
@@ -33,7 +36,7 @@ void GameScene::Update(float eTime)
 	for (auto b : PbulletList) {
 		b->Update(eTime);
 	}
-	for (auto eB : EbulletList) {
+	for (auto eB : E1bulletList) {
 		eB->Update(eTime);
 	}
 
@@ -51,6 +54,7 @@ void GameScene::Update(float eTime)
 	EnemyShooting(eTime);
 
 	EnemyDead();
+	AttackPlayer();
 	CheckOut();
 }
 
@@ -64,7 +68,7 @@ void GameScene::Render()
 	for (auto pB : PbulletList) {
 		pB->Render();
 	}
-	for (auto eB : EbulletList) {
+	for (auto eB : E1bulletList) {
 		eB->Render();
 	}
 
@@ -76,18 +80,22 @@ void GameScene::Render()
 
 void GameScene::PlayerShooting(float eTime)
 {
-	playerShootingT.first += eTime;
+	if (isAlive) {
+		playerShootingT.first += eTime;
 
-	if (playerShootingT.first >= playerShootingT.second) {
-		Bullet* b = new Bullet(0);
+		if (playerShootingT.first >= playerShootingT.second) {
+			Bullet* b = new Bullet(0);
 
-		b->bullet1->SetPos(p->Pos().x, p->Pos().y + 10);
-		b->bullet2->SetPos(p->Pos().x + 80, p->Pos().y + 10);
+			b->bullet1->SetPos(p->Pos().x, p->Pos().y + 10);
+			b->bullet2->SetPos(p->Pos().x + 80, p->Pos().y + 10);
 
-		PbulletList.push_back(b);
-		PushScene(b);
+			ZeroSoundMgr->Play("pShootingSound");
 
-		playerShootingT.first = 0;
+			PbulletList.push_back(b);
+			PushScene(b);
+
+			playerShootingT.first = 0;
+		}
 	}
 }
 
@@ -99,10 +107,8 @@ void GameScene::EnemyShooting(float eTime)
 		if (enemyShootingT.first >= enemyShootingT.second) {
 			Bullet* b = new Bullet(1);
 
-			b->bullet1->SetPos(e->Pos().x, e->Pos().y + 50);
-			b->bullet2->SetPos(e->Pos().x + 80, e->Pos().y + 50);
-
-			EbulletList.push_back(b);
+			b->bullet1->SetPos(e->Pos().x + (0.5f * e->enemy->Width()), e->Pos().y + e->enemy->Height());
+			E1bulletList.push_back(b);
 			PushScene(b);
 
 			enemyShootingT.first = 0;
@@ -147,6 +153,20 @@ void GameScene::EnemyDead()
 		}
 		e++;
 		if (e == enemyList.end()) break;
+	}
+}
+
+void GameScene::AttackPlayer()
+{
+	for (auto e1B = E1bulletList.begin(); e1B != E1bulletList.end();) {
+		if (p->player->IsOverlapped((*e1B)->bullet1)) {
+			PopScene(p);
+			PopScene(*e1B);
+			E1bulletList.erase(e1B++);
+
+			isAlive = false;
+		}
+		else e1B++;
 	}
 }
 

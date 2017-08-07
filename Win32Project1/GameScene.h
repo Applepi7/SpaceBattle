@@ -19,8 +19,9 @@ private:
 
 	PlayerCharacter* p;
 	list<Enemy*> enemyList;
+
 	list<Bullet*> PbulletList;
-	list<Bullet*> EbulletList;
+	list<Bullet*> E1bulletList;
 
 
 	pair<float, float> playerShootingT;
@@ -29,8 +30,8 @@ private:
 	
 
 	bool isShooting;
+	bool isAlive;
 
-	float shipHP;
 
 	void Update(float eTime) override;
 	void Render() override;
@@ -39,6 +40,7 @@ private:
 	void EnemyShooting(float eTime);
 	void SpawnEnemy(float eTime);
 	void EnemyDead();
+	void AttackPlayer();
 	void CheckOut();
 	void MovingBackground(float eTime);
 
