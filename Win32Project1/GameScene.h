@@ -14,8 +14,8 @@ class GameScene :
 	public ZeroIScene
 {
 private:
-	ZeroSprite* background;
-	ZeroSprite* ship;
+	ZeroSprite* background1;
+	ZeroSprite* background2;
 
 	PlayerCharacter* p;
 	list<Enemy*> enemyList;
@@ -30,6 +30,8 @@ private:
 
 	bool isShooting;
 
+	float shipHP;
+
 	void Update(float eTime) override;
 	void Render() override;
 
@@ -38,6 +40,7 @@ private:
 	void SpawnEnemy(float eTime);
 	void EnemyDead();
 	void CheckOut();
+	void MovingBackground(float eTime);
 
 public:
 	GameScene();

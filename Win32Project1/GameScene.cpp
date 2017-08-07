@@ -6,19 +6,16 @@
 #include "ZeroInputManager.h"
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 2.0f),isShooting(true)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, .5f),isShooting(true), shipHP(100.0f)
 {
 	p = new PlayerCharacter();
+	
+	background1 = new ZeroSprite("Resource/Background/space.png");
+	background2 = new ZeroSprite("Resource/Background/space.png");
 
-	background = new ZeroSprite("Resource/Background/space.png");
-	ship = new ZeroSprite("Resource/Background/ship.png");
+	background2->SetPos(background1->Pos().x, background1->Pos().y + background1->Height());
 
 	PushScene(p);
-
-	PushScene(background);
-	PushScene(ship);
-
-	ship->SetPos(-10, 750);
 }
 
 
@@ -30,7 +27,8 @@ GameScene::~GameScene()
 void GameScene::Update(float eTime)
 {
 	ZeroIScene::Update(eTime);
-	background->Update(eTime);
+	background1->Update(eTime);
+	background2->Update(eTime);
 
 	for (auto b : PbulletList) {
 		b->Update(eTime);
@@ -43,7 +41,8 @@ void GameScene::Update(float eTime)
 		e->Update(eTime);
 	}
 	p->Update(eTime);
-	
+
+	MovingBackground(eTime);
 
 	playerShootingT.first += eTime;
 
@@ -58,8 +57,9 @@ void GameScene::Update(float eTime)
 void GameScene::Render()
 {
 	ZeroIScene::Render();
-	background->Render();
-	ship->Render();
+
+	background1->Render();
+	background2->Render();
 
 	for (auto pB : PbulletList) {
 		pB->Render();
@@ -150,6 +150,7 @@ void GameScene::EnemyDead()
 	}
 }
 
+
 void GameScene::CheckOut()
 {
 	for (auto b = PbulletList.begin(); b != PbulletList.end();) {
@@ -159,6 +160,19 @@ void GameScene::CheckOut()
 			PbulletList.erase(b++);
 		}
 		else b++;
+	}
+
+}
+
+void GameScene::MovingBackground(float eTime)
+{
+	background1->AddPosY(-450 * eTime);
+	background2->AddPosY(-450 * eTime);
+	if (background1->Pos().y + background1->Height() <= 0) {
+		background1->SetPosY(background2->Pos().y + background1->Height());
+	}
+	if (background2->Pos().y + background2->Height() <= 0) {
+		background2->SetPosY(background1->Pos().y + background2->Height());
 	}
 
 }
