@@ -7,7 +7,7 @@
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 10.0f), isShooting(true), isPAlive(true), isDistanceRender(false), meter(1), score(0)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 5.0f), isShooting(true), isPAlive(true), isDistanceRender(false), meter(1), score(0), spawnTime(5.0f)
 {
 	p = new PlayerCharacter();
 	
@@ -23,7 +23,7 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	distanceText = new ZeroFont(80, "");
 
 	background2->SetPos(background1->Pos().x, background1->Pos().y + background1->Height());
-	scoreText->SetPos(500, 50);
+	scoreText->SetPos(480, 50);
 	distanceText->SetPos(260, 200);
 
 	PushScene(p);
@@ -32,12 +32,6 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	ZeroSoundMgr->PushSound("Resource/Sound/Explosion.wav", "explosionSound");
 }
 
-
-GameScene::~GameScene()
-{
-}
-
-
 void GameScene::Update(float eTime)
 {
 	ZeroIScene::Update(eTime);
@@ -45,6 +39,7 @@ void GameScene::Update(float eTime)
 	background2->Update(eTime);
 
 	distanceText->Update(eTime);
+	explosion->Update(eTime);
 
 	scoreText->SetString("SCORE : " + to_string(score));
 	distanceText->SetString(to_string(meter / 500 * 500) + "m");
@@ -56,26 +51,25 @@ void GameScene::Update(float eTime)
 	}
 	p->Update(eTime);
 
-
-	playerShootingT.first += eTime;
-	
 	if (isPAlive) {
-		score += 1;
+		playerShootingT.first += eTime;
+		score += 0;
 		meter += 1;
 
 		MovingBackground(eTime);
 		PlayerShooting(eTime);
+		EnemyShooting(eTime);
 		SpawnEnemy(eTime);
 		PlayerDamaged();
 		ShowDistance();
 	}
 
-	EnemyShooting(eTime);
+	if (meter % 500 == 0) {
+		EspawnTimer.second -= 1.0f;
+	}
 
 	EnemyDeath();
 	CheckOut();
-
-	explosion->Update(eTime);
 }
 
 void GameScene::Render()
@@ -85,6 +79,7 @@ void GameScene::Render()
 	background1->Render();
 	background2->Render();
 
+	explosion->Render();
 
 	RenderBulletLists();
 
@@ -92,8 +87,6 @@ void GameScene::Render()
 		e->Render();
 	}
 	p->Render();
-
-	explosion->Render();
 
 	if(isDistanceRender)
 		distanceText->Render();
@@ -135,22 +128,18 @@ void GameScene::RenderBulletLists()
 
 void GameScene::PlayerShooting(float eTime)
 {
-	if (isPAlive) {
-		playerShootingT.first += eTime;
+	if (playerShootingT.first >= playerShootingT.second) {
+		Bullet* b = new Bullet(0);
 
-		if (playerShootingT.first >= playerShootingT.second) {
-			Bullet* b = new Bullet(0);
+		b->bullet1->SetPos(p->Pos().x, p->Pos().y + 10);
+		b->bullet2->SetPos(p->Pos().x + 80, p->Pos().y + 10);
 
-			b->bullet1->SetPos(p->Pos().x, p->Pos().y + 10);
-			b->bullet2->SetPos(p->Pos().x + 80, p->Pos().y + 10);
+		ZeroSoundMgr->Play("pShootingSound");
 
-			ZeroSoundMgr->Play("pShootingSound");
+		PbulletList.push_back(b);
+		PushScene(b);
 
-			PbulletList.push_back(b);
-			PushScene(b);
-
-			playerShootingT.first = 0;
-		}
+		playerShootingT.first = 0;
 	}
 }
 
@@ -229,6 +218,7 @@ void GameScene::EnemyDeath()
 				(*e)->isEAlive = false;
 
 				Explosion(*e);
+				Scoring(*e);
 
 				PopScene(*e);
 				PopScene(*b);
@@ -295,6 +285,22 @@ void GameScene::Explosion(Enemy* e)
 	PushScene(explosion);
 
 	explosion->SetPos(e->Pos().x, e->Pos().y);
+}
+
+void GameScene::Scoring(Enemy* e)
+{
+	switch (e->eTYPE)
+	{
+	case BLACK:
+		score += 50;
+		break;
+	case RED:
+		score += 100;
+		break;
+	case GREY:
+		score += 200;
+		break;
+	}
 }
 
 

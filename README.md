@@ -4,7 +4,7 @@ Defense Space Shooting Game
 갤러그를 본떠서 만든 우주선 슈팅 디펜스 게임입니다
 
 
-<h2>이미지 출처</h2>
+<h2>리소스 출처</h2>
 
 >우주선
 <br/>http://millionthvector.blogspot.kr/p/free-sprites_12.html<br/>

@@ -53,6 +53,7 @@ private:
 	int score;
 
 	float randomINT;
+	float spawnTime;
 
 	void Update(float eTime) override;
 	void Render() override;
@@ -66,12 +67,12 @@ private:
 	void EnemyDeath();
 	void PlayerDamaged();
 	void Explosion(Enemy* e);
+	void Scoring(Enemy* e);
 	void CheckOut();
 	void MovingBackground(float eTime);
 	void ShowDistance();
 
 public:
 	GameScene();
-	~GameScene();
 };
 

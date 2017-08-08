@@ -3,7 +3,7 @@
 
 
 
-Bullet::Bullet(int TYPE) : bulletSpeed(500)
+Bullet::Bullet(int TYPE)
 {
 	switch (TYPE)
 	{
@@ -11,21 +11,24 @@ Bullet::Bullet(int TYPE) : bulletSpeed(500)
 		bullet1 = new ZeroSprite("Resource/Bullet/playerB.png");
 		bullet2 = new ZeroSprite("Resource/Bullet/playerB.png");
 		this->TYPE = TYPE;
-		bulletSpeed *= -1;
+		bulletSpeed = -500;
 		break;
 	case 1:		// ENEMY_1
 		bullet1 = new ZeroSprite("Resource/Bullet/enemy01B.png");
 		bullet2 = new ZeroSprite("Resource/Bullet/enemy01B.png");
+		bulletSpeed = 300;
 		this->TYPE = TYPE;
 		break;
 	case 2:		// ENEMY_2
 		bullet1 = new ZeroSprite("Resource/Bullet/enemy02B.png");
 		bullet2 = new ZeroSprite("Resource/Bullet/enemy02B.png");
 		bullet3 = new ZeroSprite("Resource/Bullet/enemy02B.png");
+		bulletSpeed = 300;
 		this->TYPE = TYPE;
 		break;
 	case 3:		// ENEMY_3
 		bullet1 = new ZeroSprite("Resource/Bullet/enemy03B.png");
+		bulletSpeed = 300;
 		this->TYPE = TYPE;
 		break;
 	}
