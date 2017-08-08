@@ -3,7 +3,7 @@
 
 
 
-Bullet::Bullet(int TYPE) : bulletSpeed(200)
+Bullet::Bullet(int TYPE) : bulletSpeed(500)
 {
 	switch (TYPE)
 	{

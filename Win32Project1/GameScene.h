@@ -1,6 +1,7 @@
 #pragma once
 #include "ZeroIScene.h"
 #include "ZeroSprite.h"
+#include "ZeroFont.h"
 
 #include "PlayerCharacter.h"
 #include "Enemy.h"
@@ -16,6 +17,8 @@ class GameScene :
 private:
 	ZeroSprite* background1;
 	ZeroSprite* background2;
+
+	ZeroFont* distanceText;
 
 	PlayerCharacter* p;
 	list<Enemy*> enemyList;
@@ -47,6 +50,7 @@ private:
 	void PlayerDamaged();
 	void CheckOut();
 	void MovingBackground(float eTime);
+	void Distance();
 
 public:
 	GameScene();

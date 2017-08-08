@@ -7,14 +7,17 @@
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 1.0f),isShooting(true), isAlive(true)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 1.0f),isShooting(true), isAlive(true), meter(0)
 {
 	p = new PlayerCharacter();
 	
 	background1 = new ZeroSprite("Resource/Background/space.png");
 	background2 = new ZeroSprite("Resource/Background/space.png");
 
+	distanceText = new ZeroFont(40, "");
+
 	background2->SetPos(background1->Pos().x, background1->Pos().y + background1->Height());
+	distanceText->SetPos(500, 50);
 
 	PushScene(p);
 
@@ -32,6 +35,10 @@ void GameScene::Update(float eTime)
 	ZeroIScene::Update(eTime);
 	background1->Update(eTime);
 	background2->Update(eTime);
+
+	distanceText->Update(eTime);
+
+	distanceText->SetString(to_string(meter) + "m");
 
 	for (auto b : PbulletList) {
 		b->Update(eTime);
@@ -51,16 +58,21 @@ void GameScene::Update(float eTime)
 	}
 	p->Update(eTime);
 
-	MovingBackground(eTime);
 
 	playerShootingT.first += eTime;
+	
+	if (isAlive) {
+		meter += eTime;
 
-	PlayerShooting(eTime);
-	SpawnEnemy(eTime);
+		MovingBackground(eTime);
+		PlayerShooting(eTime);
+		SpawnEnemy(eTime);
+		PlayerDamaged();
+	}
+
 	EnemyShooting(eTime);
 
 	EnemyDeath();
-	PlayerDamaged();
 	CheckOut();
 }
 
@@ -70,6 +82,8 @@ void GameScene::Render()
 
 	background1->Render();
 	background2->Render();
+
+	distanceText->Render();
 
 	for (auto pB : PbulletList) {
 		pB->Render();
@@ -260,4 +274,8 @@ void GameScene::MovingBackground(float eTime)
 		background2->SetPosY(background1->Pos().y + background2->Height());
 	}
 
+}
+
+void GameScene::Distance()
+{
 }

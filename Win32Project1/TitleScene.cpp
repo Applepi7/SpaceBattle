@@ -13,12 +13,15 @@ TitleScene::TitleScene()
 	background1 = new ZeroSprite("Resource/Background/space.png");
 	background2 = new ZeroSprite("Resource/Background/space.png");
 
+	enterText = new ZeroFont(40, "Press Enter To Start");
+
 	PushScene(background1);
 	PushScene(background2);
 
 	background2->SetPos(background1->Pos().x, background1->Pos().y + background1->Height());
 
-	title->SetPos(180, 100);
+	title->SetPos(350 - (title->Width() * 0.5), 100);
+	enterText->SetPos(220, 700);
 }
 
 void TitleScene::Update(float eTime)
@@ -35,6 +38,7 @@ void TitleScene::Render()
 	background1->Render();
 	background2->Render();
 	title->Render();
+	enterText->Render();
 }
 
 void TitleScene::MovingBackground(float eTime)
