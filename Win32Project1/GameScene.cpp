@@ -28,8 +28,12 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 
 	PushScene(p);
 
+	ZeroSoundMgr->PushSound("Resource/Sound/bgm_1.wav", "bgm");
 	ZeroSoundMgr->PushSound("Resource/Sound/pShooting.wav", "pShootingSound");
 	ZeroSoundMgr->PushSound("Resource/Sound/Explosion.wav", "explosionSound");
+	ZeroSoundMgr->PushSound("Resource/Sound/playerdamage.wav", "playerDamageSound");
+
+	ZeroSoundMgr->Play("bgm");
 }
 
 void GameScene::Update(float eTime)
@@ -53,7 +57,6 @@ void GameScene::Update(float eTime)
 
 	if (isPAlive) {
 		playerShootingT.first += eTime;
-		score += 0;
 		meter += 1;
 
 		MovingBackground(eTime);
@@ -65,7 +68,8 @@ void GameScene::Update(float eTime)
 	}
 
 	if (meter % 500 == 0) {
-		EspawnTimer.second -= 1.0f;
+		if(EspawnTimer.second >= 1.5f)
+		EspawnTimer.second -= 0.5f;
 	}
 
 	EnemyDeath();
@@ -202,7 +206,7 @@ void GameScene::SpawnEnemy(float eTime)
 		enemyList.push_back(e);
 		PushScene(e);
 
-		e->SetPos(Random(0, 700 - e->Width()), 0);
+		e->SetPos(Random(e->Width(), 600 - e->Width()), 0);
 
 		EspawnTimer.first = 0;
 
@@ -222,8 +226,6 @@ void GameScene::EnemyDeath()
 
 				PopScene(*e);
 				PopScene(*b);
-
-				ZeroSoundMgr->Play("explosionSound");
 
 				enemyList.erase(e++);
 				PbulletList.erase(b++);
@@ -245,6 +247,7 @@ void GameScene::PlayerDamaged()
 	for (auto e1B = E1bulletList.begin(); e1B != E1bulletList.end();) {
 		if (p->player->IsOverlapped((*e1B)->bullet1) || p->player->IsOverlapped((*e1B)->bullet2)) {
 			p->health -= 10;
+			ZeroSoundMgr->Play("playerDamageSound");
 			PopScene(*e1B);
 			E1bulletList.erase(e1B++);
 		}
@@ -253,6 +256,7 @@ void GameScene::PlayerDamaged()
 	for (auto e2B = E2bulletList.begin(); e2B != E2bulletList.end();) {
 		if (p->player->IsOverlapped((*e2B)->bullet1) || p->player->IsOverlapped((*e2B)->bullet2 || p->player->IsOverlapped((*e2B)->bullet3))) {
 			p->health -= 20;
+			ZeroSoundMgr->Play("playerDamageSound");
 			PopScene(*e2B);
 			E2bulletList.erase(e2B++);
 		}
@@ -261,11 +265,13 @@ void GameScene::PlayerDamaged()
 	for (auto e3B = E3bulletList.begin(); e3B != E3bulletList.end();) {
 		if (p->player->IsOverlapped((*e3B)->bullet1)) {
 			p->health -= 50;
+			ZeroSoundMgr->Play("playerDamageSound");
 			PopScene(*e3B);
 			E3bulletList.erase(e3B++);
 		}
 		else e3B++;
 	}
+
 
 	if (p->health <= 0) PlayerDead();
 }
@@ -287,6 +293,8 @@ void GameScene::Explosion(Enemy* e)
 	explosion->SetLooping(false);
 	PushScene(explosion);
 
+	ZeroSoundMgr->Play("explosionSound");
+
 	explosion->SetPos(e->Pos().x, e->Pos().y);
 }
 
@@ -298,6 +306,8 @@ void GameScene::Explosion(PlayerCharacter * p)
 	}
 	explosion->SetLooping(false);
 	PushScene(explosion);
+
+	ZeroSoundMgr->Play("explosionSound");
 
 	explosion->SetPos(p->Pos().x, p->Pos().y);
 }
