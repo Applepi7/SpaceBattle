@@ -66,7 +66,9 @@ private:
 	void SpawnEnemy(float eTime);
 	void EnemyDeath();
 	void PlayerDamaged();
+	void PlayerDead();
 	void Explosion(Enemy* e);
+	void Explosion(PlayerCharacter* p);
 	void Scoring(Enemy* e);
 	void CheckOut();
 	void MovingBackground(float eTime);

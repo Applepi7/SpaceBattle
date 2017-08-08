@@ -10,7 +10,7 @@
 GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 5.0f), isShooting(true), isPAlive(true), isDistanceRender(false), meter(1), score(0), spawnTime(5.0f)
 {
 	p = new PlayerCharacter();
-	
+
 	background1 = new ZeroSprite("Resource/Background/space.png");
 	background2 = new ZeroSprite("Resource/Background/space.png");
 
@@ -88,7 +88,7 @@ void GameScene::Render()
 	}
 	p->Render();
 
-	if(isDistanceRender)
+	if (isDistanceRender)
 		distanceText->Render();
 
 	scoreText->Render();
@@ -203,7 +203,7 @@ void GameScene::SpawnEnemy(float eTime)
 		PushScene(e);
 
 		e->SetPos(Random(0, 700 - e->Width()), 0);
-		
+
 		EspawnTimer.first = 0;
 
 	}
@@ -244,35 +244,38 @@ void GameScene::PlayerDamaged()
 {
 	for (auto e1B = E1bulletList.begin(); e1B != E1bulletList.end();) {
 		if (p->player->IsOverlapped((*e1B)->bullet1) || p->player->IsOverlapped((*e1B)->bullet2)) {
-			PopScene(p);
+			p->health -= 10;
 			PopScene(*e1B);
 			E1bulletList.erase(e1B++);
-
-			isPAlive = false;
 		}
 		else e1B++;
 	}
 	for (auto e2B = E2bulletList.begin(); e2B != E2bulletList.end();) {
 		if (p->player->IsOverlapped((*e2B)->bullet1) || p->player->IsOverlapped((*e2B)->bullet2 || p->player->IsOverlapped((*e2B)->bullet3))) {
-			PopScene(p);
+			p->health -= 20;
 			PopScene(*e2B);
 			E2bulletList.erase(e2B++);
-
-			isPAlive = false;
 		}
 		else e2B++;
 	}
 	for (auto e3B = E3bulletList.begin(); e3B != E3bulletList.end();) {
 		if (p->player->IsOverlapped((*e3B)->bullet1)) {
-			PopScene(p);
+			p->health -= 50;
 			PopScene(*e3B);
 			E3bulletList.erase(e3B++);
-
-			isPAlive = false;
 		}
 		else e3B++;
 	}
 
+	if (p->health <= 0) PlayerDead();
+}
+
+void GameScene::PlayerDead()
+{
+	Explosion(p);
+	PopScene(p);
+
+	isPAlive = false;
 }
 
 void GameScene::Explosion(Enemy* e)
@@ -285,6 +288,18 @@ void GameScene::Explosion(Enemy* e)
 	PushScene(explosion);
 
 	explosion->SetPos(e->Pos().x, e->Pos().y);
+}
+
+void GameScene::Explosion(PlayerCharacter * p)
+{
+	explosion = new ZeroAnimation(5.0f);
+	for (int i = 1; i <= 8; i++) {
+		explosion->PushSprite("Resource/Explosion/explosion_%d.png", i);
+	}
+	explosion->SetLooping(false);
+	PushScene(explosion);
+
+	explosion->SetPos(p->Pos().x, p->Pos().y);
 }
 
 void GameScene::Scoring(Enemy* e)
