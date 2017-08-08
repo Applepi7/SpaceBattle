@@ -4,7 +4,7 @@
 
 
 
-Enemy::Enemy(int eTYPE) : speed(150), movingTimer(0.0f, 1.0f)
+Enemy::Enemy(int eTYPE) : speed(150), movingTimer(0.0f, 1.0f), isEAlive(true)
 {
 	switch (eTYPE)
 	{

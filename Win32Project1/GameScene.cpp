@@ -7,12 +7,17 @@
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 1.0f),isShooting(true), isAlive(true), meter(0)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 1.0f),isShooting(true), isPAlive(true), meter(0)
 {
 	p = new PlayerCharacter();
 	
 	background1 = new ZeroSprite("Resource/Background/space.png");
 	background2 = new ZeroSprite("Resource/Background/space.png");
+
+	explosion = new ZeroAnimation(5.0f);
+	explosion->PushSprite("Resource/Explosion/explosion_8.png");
+	explosion->SetLooping(false);
+	PushScene(explosion);
 
 	distanceText = new ZeroFont(40, "");
 
@@ -22,6 +27,7 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	PushScene(p);
 
 	ZeroSoundMgr->PushSound("Resource/Sound/pShooting.wav", "pShootingSound");
+	ZeroSoundMgr->PushSound("Resource/Sound/Explosion.wav", "explosionSound");
 }
 
 
@@ -40,18 +46,7 @@ void GameScene::Update(float eTime)
 
 	distanceText->SetString(to_string(meter) + "m");
 
-	for (auto b : PbulletList) {
-		b->Update(eTime);
-	}
-	for (auto e1B : E1bulletList) {
-		e1B->Update(eTime);
-	}
-	for (auto e2B : E2bulletList) {
-		e2B->Update(eTime);
-	}
-	for (auto e3B : E3bulletList) {
-		e3B->Update(eTime);
-	}
+	UpdateBulletLists(eTime);
 
 	for (auto e : enemyList) {
 		e->Update(eTime);
@@ -61,7 +56,7 @@ void GameScene::Update(float eTime)
 
 	playerShootingT.first += eTime;
 	
-	if (isAlive) {
+	if (isPAlive) {
 		meter += eTime;
 
 		MovingBackground(eTime);
@@ -74,6 +69,8 @@ void GameScene::Update(float eTime)
 
 	EnemyDeath();
 	CheckOut();
+
+	explosion->Update(eTime);
 }
 
 void GameScene::Render()
@@ -85,6 +82,34 @@ void GameScene::Render()
 
 	distanceText->Render();
 
+	RenderBulletLists();
+
+	for (auto e : enemyList) {
+		e->Render();
+	}
+	p->Render();
+
+	explosion->Render();
+}
+
+void GameScene::UpdateBulletLists(float eTime)
+{
+	for (auto b : PbulletList) {
+		b->Update(eTime);
+	}
+	for (auto e1B : E1bulletList) {
+		e1B->Update(eTime);
+	}
+	for (auto e2B : E2bulletList) {
+		e2B->Update(eTime);
+	}
+	for (auto e3B : E3bulletList) {
+		e3B->Update(eTime);
+	}
+}
+
+void GameScene::RenderBulletLists()
+{
 	for (auto pB : PbulletList) {
 		pB->Render();
 	}
@@ -97,16 +122,11 @@ void GameScene::Render()
 	for (auto eB : E3bulletList) {
 		eB->Render();
 	}
-
-	for (auto e : enemyList) {
-		e->Render();
-	}
-	p->Render();
 }
 
 void GameScene::PlayerShooting(float eTime)
 {
-	if (isAlive) {
+	if (isPAlive) {
 		playerShootingT.first += eTime;
 
 		if (playerShootingT.first >= playerShootingT.second) {
@@ -134,14 +154,14 @@ void GameScene::EnemyShooting(float eTime)
 
 			Bullet* b;
 
-			if (e->eTYPE == 0) {	// BLACK
+			if (e->eTYPE == BLACK) {
 				b = new Bullet(1);
 				b->bullet1->SetPos(e->Pos().x, e->Pos().y + e->enemy->Height());
 				b->bullet2->SetPos(e->Pos().x + e->enemy->Width(), e->Pos().y + e->enemy->Height());
 				E1bulletList.push_back(b);
 				PushScene(b);
 			}
-			if (e->eTYPE == 1) {	// RED
+			if (e->eTYPE == RED) {
 				b = new Bullet(2);
 				b->bullet1->SetPos(e->Pos().x, e->Pos().y + e->enemy->Height() - 20);
 				b->bullet2->SetPos(e->Pos().x + (0.5f * e->enemy->Width()), e->Pos().y + e->enemy->Height() + 30);
@@ -149,7 +169,7 @@ void GameScene::EnemyShooting(float eTime)
 				E2bulletList.push_back(b);
 				PushScene(b);
 			}
-			if (e->eTYPE == 2) {	// GREY
+			if (e->eTYPE == GREY) {
 				b = new Bullet(3);
 				b->bullet1->SetPos(e->Pos().x + (0.5f * e->enemy->Width()), e->Pos().y + e->enemy->Height());
 				E3bulletList.push_back(b);
@@ -196,8 +216,15 @@ void GameScene::EnemyDeath()
 	for (auto e = enemyList.begin(); e != enemyList.end();) {
 		for (auto b = PbulletList.begin(); b != PbulletList.end();) {
 			if ((*e)->enemy->IsOverlapped((*b)->bullet1) || (*e)->enemy->IsOverlapped((*b)->bullet2)) {
+
+				(*e)->isEAlive = false;
+
+				Explosion(*e);
+
 				PopScene(*e);
 				PopScene(*b);
+
+				ZeroSoundMgr->Play("explosionSound");
 
 				enemyList.erase(e++);
 				PbulletList.erase(b++);
@@ -222,7 +249,7 @@ void GameScene::PlayerDamaged()
 			PopScene(*e1B);
 			E1bulletList.erase(e1B++);
 
-			isAlive = false;
+			isPAlive = false;
 		}
 		else e1B++;
 	}
@@ -232,7 +259,7 @@ void GameScene::PlayerDamaged()
 			PopScene(*e2B);
 			E2bulletList.erase(e2B++);
 
-			isAlive = false;
+			isPAlive = false;
 		}
 		else e2B++;
 	}
@@ -242,25 +269,36 @@ void GameScene::PlayerDamaged()
 			PopScene(*e3B);
 			E3bulletList.erase(e3B++);
 
-			isAlive = false;
+			isPAlive = false;
 		}
 		else e3B++;
 	}
 
 }
 
+void GameScene::Explosion(Enemy* e)
+{
+	explosion = new ZeroAnimation(5.0f);
+	for (int i = 1; i <= 8; i++) {
+		explosion->PushSprite("Resource/Explosion/explosion_%d.png", i);
+	}
+	explosion->SetLooping(false);
+	PushScene(explosion);
+
+	explosion->SetPos(e->Pos().x, e->Pos().y);
+}
+
 
 void GameScene::CheckOut()
 {
-	for (auto b = PbulletList.begin(); b != PbulletList.end();) {
+	for (auto pb = PbulletList.begin(); pb != PbulletList.end();) {
 
-		if ((*b)->Pos().y < 0) {
-			PopScene(*b);
-			PbulletList.erase(b++);
+		if ((*pb)->Pos().y < 0) {
+			PopScene(*pb);
+			PbulletList.erase(pb++);
 		}
-		else b++;
+		else pb++;
 	}
-
 }
 
 void GameScene::MovingBackground(float eTime)

@@ -18,6 +18,8 @@ public:
 	Enemy(int eTYPE);
 	~Enemy();
 
+	bool isEAlive;
+
 	int eTYPE;
 
 	void Update(float eTime) override;

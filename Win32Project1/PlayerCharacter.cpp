@@ -9,8 +9,7 @@ PlayerCharacter::PlayerCharacter() : health(100)
 	player = new ZeroSprite("Resource/Player/Spaceship.png");
 	PushScene(player);
 
-	SetPos(300, 600);
-
+	SetPos(350 - (player->Width() * 0.5f), 600);
 }
 
 
@@ -31,7 +30,6 @@ void PlayerCharacter::Render()
 {
 	ZeroIScene::Render();
 	player->Render();
-
 }
 
 void PlayerCharacter::Input(float eTime)
