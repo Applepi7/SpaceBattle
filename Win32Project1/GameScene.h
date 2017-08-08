@@ -28,6 +28,7 @@ private:
 
 	ZeroAnimation* explosion;
 
+	ZeroFont* scoreText;
 	ZeroFont* distanceText;
 
 	PlayerCharacter* p;
@@ -46,8 +47,11 @@ private:
 
 	bool isShooting;
 	bool isPAlive;
+	bool isDistanceRender;
 
-	float meter;
+	int meter;
+	int score;
+
 	float randomINT;
 
 	void Update(float eTime) override;
@@ -64,7 +68,7 @@ private:
 	void Explosion(Enemy* e);
 	void CheckOut();
 	void MovingBackground(float eTime);
-	void Distance();
+	void ShowDistance();
 
 public:
 	GameScene();

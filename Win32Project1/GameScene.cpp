@@ -7,7 +7,7 @@
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 1.0f),isShooting(true), isPAlive(true), meter(0)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 10.0f), isShooting(true), isPAlive(true), isDistanceRender(false), meter(1), score(0)
 {
 	p = new PlayerCharacter();
 	
@@ -19,10 +19,12 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	explosion->SetLooping(false);
 	PushScene(explosion);
 
-	distanceText = new ZeroFont(40, "");
+	scoreText = new ZeroFont(40, "");
+	distanceText = new ZeroFont(80, "");
 
 	background2->SetPos(background1->Pos().x, background1->Pos().y + background1->Height());
-	distanceText->SetPos(500, 50);
+	scoreText->SetPos(500, 50);
+	distanceText->SetPos(260, 200);
 
 	PushScene(p);
 
@@ -44,7 +46,8 @@ void GameScene::Update(float eTime)
 
 	distanceText->Update(eTime);
 
-	distanceText->SetString(to_string(meter) + "m");
+	scoreText->SetString("SCORE : " + to_string(score));
+	distanceText->SetString(to_string(meter / 500 * 500) + "m");
 
 	UpdateBulletLists(eTime);
 
@@ -57,12 +60,14 @@ void GameScene::Update(float eTime)
 	playerShootingT.first += eTime;
 	
 	if (isPAlive) {
-		meter += eTime;
+		score += 1;
+		meter += 1;
 
 		MovingBackground(eTime);
 		PlayerShooting(eTime);
 		SpawnEnemy(eTime);
 		PlayerDamaged();
+		ShowDistance();
 	}
 
 	EnemyShooting(eTime);
@@ -80,7 +85,6 @@ void GameScene::Render()
 	background1->Render();
 	background2->Render();
 
-	distanceText->Render();
 
 	RenderBulletLists();
 
@@ -90,6 +94,11 @@ void GameScene::Render()
 	p->Render();
 
 	explosion->Render();
+
+	if(isDistanceRender)
+		distanceText->Render();
+
+	scoreText->Render();
 }
 
 void GameScene::UpdateBulletLists(float eTime)
@@ -189,12 +198,12 @@ void GameScene::SpawnEnemy(float eTime)
 
 		Enemy* e;
 
-		randomINT = Random(1, 100);
+		randomINT = Random(1, 10);
 
 		if (randomINT <= 5) {	// 50%
 			e = new Enemy(0);
 		}
-		else if (randomINT > 5 && randomINT <= 88) {		// 30%
+		else if (randomINT > 5 && randomINT <= 8) {		// 30%
 			e = new Enemy(1);
 		}
 		else {		// 20%
@@ -314,6 +323,12 @@ void GameScene::MovingBackground(float eTime)
 
 }
 
-void GameScene::Distance()
+void GameScene::ShowDistance()
 {
+	int n = meter % 500;
+
+	if (meter >= 100 && ((n >= 0 && n <= 30) || (n >= 60 && n <= 90)))
+		isDistanceRender = true;
+	else
+		isDistanceRender = false;
 }
