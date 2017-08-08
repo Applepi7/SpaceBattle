@@ -36,14 +36,14 @@ void GameScene::Update(float eTime)
 	for (auto b : PbulletList) {
 		b->Update(eTime);
 	}
-	for (auto eB : E1bulletList) {
-		eB->Update(eTime);
+	for (auto e1B : E1bulletList) {
+		e1B->Update(eTime);
 	}
-	for (auto eB : E2bulletList) {
-		eB->Update(eTime);
+	for (auto e2B : E2bulletList) {
+		e2B->Update(eTime);
 	}
-	for (auto eB : E3bulletList) {
-		eB->Update(eTime);
+	for (auto e3B : E3bulletList) {
+		e3B->Update(eTime);
 	}
 
 	for (auto e : enemyList) {
@@ -155,12 +155,12 @@ void GameScene::SpawnEnemy(float eTime)
 
 		Enemy* e;
 
-		randomINT = Random(1, 10);
+		randomINT = Random(1, 100);
 
 		if (randomINT <= 5) {	// 50%
 			e = new Enemy(0);
 		}
-		else if (randomINT > 5 && randomINT <= 8) {		// 30%
+		else if (randomINT > 5 && randomINT <= 88) {		// 30%
 			e = new Enemy(1);
 		}
 		else {		// 20%
@@ -216,7 +216,7 @@ void GameScene::PlayerDamaged()
 		if (p->player->IsOverlapped((*e2B)->bullet1) || p->player->IsOverlapped((*e2B)->bullet2 || p->player->IsOverlapped((*e2B)->bullet3))) {
 			PopScene(p);
 			PopScene(*e2B);
-			E1bulletList.erase(e2B++);
+			E2bulletList.erase(e2B++);
 
 			isAlive = false;
 		}

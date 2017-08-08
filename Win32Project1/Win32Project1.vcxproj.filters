@@ -27,6 +27,9 @@
     <Filter Include="Object\Units\Player">
       <UniqueIdentifier>{2c683f4f-a842-4a08-a772-9e1637b69e7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scens\TitleScene">
+      <UniqueIdentifier>{be1d0fd1-8a94-4b98-9318-986700cd9797}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameScene.cpp">
@@ -42,6 +45,9 @@
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>Object\Units\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>Scens\TitleScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +68,9 @@
     </ClInclude>
     <ClInclude Include="Global.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>Scens\TitleScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
