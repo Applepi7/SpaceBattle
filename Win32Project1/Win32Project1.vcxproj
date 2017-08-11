@@ -156,6 +156,7 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="PlayerCharacter.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -168,6 +169,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="PlayerCharacter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TitleScene.h" />

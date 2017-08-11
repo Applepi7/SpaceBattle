@@ -7,7 +7,7 @@
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 5.0f), isShooting(true), isPAlive(true), isDistanceRender(false), meter(1), score(0), spawnTime(5.0f)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 15.0f), isPAlive(true), isDistanceRender(false), meter(1), score(0)
 {
 	p = new PlayerCharacter();
 
@@ -33,7 +33,7 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	ZeroSoundMgr->PushSound("Resource/Sound/Explosion.wav", "explosionSound");
 	ZeroSoundMgr->PushSound("Resource/Sound/playerdamage.wav", "playerDamageSound");
 
-	ZeroSoundMgr->Play("bgm");
+	//ZeroSoundMgr->Play("bgm");
 }
 
 void GameScene::Update(float eTime)
@@ -42,34 +42,45 @@ void GameScene::Update(float eTime)
 	background1->Update(eTime);
 	background2->Update(eTime);
 
-	distanceText->Update(eTime);
-	explosion->Update(eTime);
-
-	scoreText->SetString("SCORE : " + to_string(score));
-	distanceText->SetString(to_string(meter / 500 * 500) + "m");
-
 	UpdateBulletLists(eTime);
+
+	for (auto i : itemList) {
+		i->Update(eTime);
+	}
 
 	for (auto e : enemyList) {
 		e->Update(eTime);
 	}
+
 	p->Update(eTime);
 
+
 	if (isPAlive) {
-		playerShootingT.first += eTime;
 		meter += 1;
 
+		distanceText->Update(eTime);
+		explosion->Update(eTime);
+
+		scoreText->SetString("SCORE : " + to_string(score));
+		distanceText->SetString(to_string(meter / 500 * 500) + "m");
+
 		MovingBackground(eTime);
+
 		PlayerShooting(eTime);
 		EnemyShooting(eTime);
 		SpawnEnemy(eTime);
+		SpawnItem(eTime);
 		PlayerDamaged();
+		AutoScoring();
 		ShowDistance();
+
+		EatItem();
 	}
 
 	if (meter % 500 == 0) {
-		if(EspawnTimer.second >= 1.5f)
-		EspawnTimer.second -= 0.5f;
+		if (EspawnTimer.second >= 1.0f) {
+			EspawnTimer.second -= 0.5f;
+		}
 	}
 
 	EnemyDeath();
@@ -87,13 +98,19 @@ void GameScene::Render()
 
 	RenderBulletLists();
 
+	for (auto i : itemList) {
+		i->Render();
+	}
+
 	for (auto e : enemyList) {
 		e->Render();
 	}
 	p->Render();
 
-	if (isDistanceRender)
-		distanceText->Render();
+	if (isPAlive) {
+		if (isDistanceRender)
+			distanceText->Render();
+	}
 
 	scoreText->Render();
 }
@@ -132,6 +149,8 @@ void GameScene::RenderBulletLists()
 
 void GameScene::PlayerShooting(float eTime)
 {
+	playerShootingT.first += eTime;
+
 	if (playerShootingT.first >= playerShootingT.second) {
 		Bullet* b = new Bullet(0);
 
@@ -194,13 +213,13 @@ void GameScene::SpawnEnemy(float eTime)
 		randomINT = Random(1, 10);
 
 		if (randomINT <= 5) {	// 50%
-			e = new Enemy(0);
+			e = new Enemy(BLACK);
 		}
 		else if (randomINT > 5 && randomINT <= 8) {		// 30%
-			e = new Enemy(1);
+			e = new Enemy(RED);
 		}
 		else {		// 20%
-			e = new Enemy(2);
+			e = new Enemy(GREY);
 		}
 
 		enemyList.push_back(e);
@@ -209,8 +228,41 @@ void GameScene::SpawnEnemy(float eTime)
 		e->SetPos(Random(e->Width(), 600 - e->Width()), 0);
 
 		EspawnTimer.first = 0;
-
 	}
+}
+
+void GameScene::SpawnItem(float eTime)
+{
+	IspawnTimer.first += eTime;
+
+	if (IspawnTimer.first >= IspawnTimer.second) {
+
+		Item* item;
+
+		if (p->health <= 50)
+			item = new Item(HEALPACK);
+		else
+			item = new Item(SPEEDUP);
+
+		itemList.push_back(item);
+		PushScene(item);
+
+		item->SetPos(Random(200, 500), Random(300, 600));
+
+		IspawnTimer.first = 0;
+	}
+
+	/*for(auto i = itemList.begin(); i != itemList.end();){
+	if (IspawnTimer.first >= -1) {
+	PopScene(*i);
+	itemList.erase(i++);
+	IspawnTimer.first = 0;
+	}
+	}*/
+}
+
+void GameScene::SpawnBoss()
+{
 }
 
 void GameScene::EnemyDeath()
@@ -298,7 +350,7 @@ void GameScene::Explosion(Enemy* e)
 	explosion->SetPos(e->Pos().x, e->Pos().y);
 }
 
-void GameScene::Explosion(PlayerCharacter * p)
+void GameScene::Explosion(PlayerCharacter* p)
 {
 	explosion = new ZeroAnimation(5.0f);
 	for (int i = 1; i <= 8; i++) {
@@ -328,6 +380,47 @@ void GameScene::Scoring(Enemy* e)
 	}
 }
 
+void GameScene::AutoScoring()
+{
+	if (meter % 5 == 0) {
+		score += 1;
+	}
+}
+
+void GameScene::BulletSpeedUp()
+{
+	
+}
+
+void GameScene::EatItem()
+{
+	for (auto item = itemList.begin(); item != itemList.end();) {
+		if (p->player->IsOverlapped((*item)->item)) {
+			if ((*item)->iTYPE == HEALPACK)
+				p->health += 30;
+			else if ((*item)->iTYPE == SPEEDUP)
+				playerShootingT.second = 0.1f;
+
+			itemList.erase(item++);
+			PopScene(*item);
+
+			item++;
+		}
+		else item++;
+	}
+
+	for (auto item = itemList.begin(); item != itemList.end();) {
+		if ((*item)->isDestroy) {
+			itemList.erase(item++);
+			PopScene(*item);
+		}
+		item++;
+	}
+}
+
+void GameScene::ShowResult()
+{
+}
 
 void GameScene::CheckOut()
 {

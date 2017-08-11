@@ -7,6 +7,7 @@
 #include "PlayerCharacter.h"
 #include "Enemy.h"
 #include "Bullet.h"
+#include "Item.h"
 
 #include <list>
 
@@ -20,6 +21,11 @@ enum ENEMY {
 	BLACK,
 	RED,
 	GREY
+};
+
+enum ITEM {
+	HEALPACK,
+	SPEEDUP
 };
 
 private:
@@ -39,13 +45,14 @@ private:
 	list<Bullet*> E2bulletList;
 	list<Bullet*> E3bulletList;
 
+	list<Item*> itemList;
 
 	pair<float, float> playerShootingT;
 	pair<float, float> enemyShootingT;
 	pair<float, float> EspawnTimer;
+	pair<float, float> IspawnTimer;
 	
 
-	bool isShooting;
 	bool isPAlive;
 	bool isDistanceRender;
 
@@ -53,7 +60,6 @@ private:
 	int score;
 
 	float randomINT;
-	float spawnTime;
 
 	void Update(float eTime) override;
 	void Render() override;
@@ -62,14 +68,20 @@ private:
 	void RenderBulletLists();
 
 	void PlayerShooting(float eTime);
-	void EnemyShooting(float eTime);
+	void EnemyShooting(float eTime); 
 	void SpawnEnemy(float eTime);
+	void SpawnItem(float eTime);
+	void SpawnBoss();
 	void EnemyDeath();
 	void PlayerDamaged();
 	void PlayerDead();
 	void Explosion(Enemy* e);
 	void Explosion(PlayerCharacter* p);
 	void Scoring(Enemy* e);
+	void AutoScoring();
+	void BulletSpeedUp();
+	void EatItem();
+	void ShowResult();
 	void CheckOut();
 	void MovingBackground(float eTime);
 	void ShowDistance();

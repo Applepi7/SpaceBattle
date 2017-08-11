@@ -30,6 +30,9 @@
     <Filter Include="Scens\TitleScene">
       <UniqueIdentifier>{be1d0fd1-8a94-4b98-9318-986700cd9797}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Item">
+      <UniqueIdentifier>{97fad75d-7991-4427-b29a-774351fed2c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameScene.cpp">
@@ -48,6 +51,9 @@
     </ClCompile>
     <ClCompile Include="TitleScene.cpp">
       <Filter>Scens\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Object\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="TitleScene.h">
       <Filter>Scens\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Object\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

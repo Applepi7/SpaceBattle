@@ -23,7 +23,6 @@ void PlayerCharacter::Update(float eTime)
 	player->Update(eTime);
 
 	Input(eTime);
-
 }
 
 void PlayerCharacter::Render()
