@@ -14,6 +14,9 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	background1 = new ZeroSprite("Resource/Background/space.png");
 	background2 = new ZeroSprite("Resource/Background/space.png");
 
+	HBForeground = new ZeroSprite("Resource/HealthBar/Foreground.png");
+	HBFill = new ZeroSprite("Resource/HealthBar/Fill.png");
+
 	explosion = new ZeroAnimation(5.0f);
 	explosion->PushSprite("Resource/Explosion/explosion_8.png");
 	explosion->SetLooping(false);
@@ -23,6 +26,9 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	distanceText = new ZeroFont(80, "");
 
 	background2->SetPos(background1->Pos().x, background1->Pos().y + background1->Height());
+	
+	HBForeground->SetPosY(950 - HBForeground->Height());
+	HBFill->SetPos(23, 883);
 	scoreText->SetPos(480, 50);
 	distanceText->SetPos(260, 200);
 
@@ -41,6 +47,9 @@ void GameScene::Update(float eTime)
 	ZeroIScene::Update(eTime);
 	background1->Update(eTime);
 	background2->Update(eTime);
+
+	HBForeground->Update(eTime);
+	HBFill->Update(eTime);
 
 	UpdateBulletLists(eTime);
 
@@ -68,6 +77,7 @@ void GameScene::Update(float eTime)
 		MovingBackground(eTime);
 
 		PlayerShooting(eTime);
+		SelfHeal();
 		EnemyShooting(eTime);
 		SpawnEnemy(eTime);
 		SpawnItem(eTime);
@@ -117,6 +127,8 @@ void GameScene::Render()
 	p->Render();
 
 	if (isPAlive) {
+		HBForeground->Render();
+		HBFill->Render();
 		if (isDistanceRender)
 			distanceText->Render();
 	}
@@ -262,10 +274,6 @@ void GameScene::SpawnItem(float eTime)
 	}
 }
 
-void GameScene::SpawnBoss()
-{
-}
-
 void GameScene::EnemyDeath()
 {
 	for (auto e = enemyList.begin(); e != enemyList.end();) {
@@ -300,6 +308,7 @@ void GameScene::PlayerDamaged()
 	for (auto e1B = E1bulletList.begin(); e1B != E1bulletList.end();) {
 		if (p->player->IsOverlapped((*e1B)->bullet1) || p->player->IsOverlapped((*e1B)->bullet2)) {
 			p->health -= 10;
+			HBFill->AddScaleX(-0.1f);
 			ZeroSoundMgr->Play("playerDamageSound");
 			PopScene(*e1B);
 			E1bulletList.erase(e1B++);
@@ -309,6 +318,7 @@ void GameScene::PlayerDamaged()
 	for (auto e2B = E2bulletList.begin(); e2B != E2bulletList.end();) {
 		if (p->player->IsOverlapped((*e2B)->bullet1) || p->player->IsOverlapped((*e2B)->bullet2 || p->player->IsOverlapped((*e2B)->bullet3))) {
 			p->health -= 20;
+			HBFill->AddScaleX(-0.2f);
 			ZeroSoundMgr->Play("playerDamageSound");
 			PopScene(*e2B);
 			E2bulletList.erase(e2B++);
@@ -318,6 +328,7 @@ void GameScene::PlayerDamaged()
 	for (auto e3B = E3bulletList.begin(); e3B != E3bulletList.end();) {
 		if (p->player->IsOverlapped((*e3B)->bullet1)) {
 			p->health -= 50;
+			HBFill->AddScaleX(-0.5f);
 			ZeroSoundMgr->Play("playerDamageSound");
 			PopScene(*e3B);
 			E3bulletList.erase(e3B++);
@@ -381,6 +392,14 @@ void GameScene::Scoring(Enemy* e)
 	}
 }
 
+void GameScene::SelfHeal()
+{
+	if (p->health + 0.001f < 100) {
+		p->health += 0.001f;
+		HBFill->AddScaleX(0.0001f);
+	}
+}
+
 void GameScene::AutoScoring()
 {
 	if (meter % 5 == 0) {
@@ -406,8 +425,10 @@ void GameScene::EatItem()
 {
 	for (auto item = itemList.begin(); item != itemList.end();) {
 		if (p->player->IsOverlapped((*item)->item)) {
-			if ((*item)->iTYPE == HEALPACK)
+			if ((*item)->iTYPE == HEALPACK) {
 				p->health += 30;
+				HBFill->AddScaleX(0.3f);
+			}
 			else if ((*item)->iTYPE == SPEEDUP)
 				isSpeedUp = true;
 

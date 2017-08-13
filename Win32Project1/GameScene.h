@@ -32,6 +32,9 @@ private:
 	ZeroSprite* background1;
 	ZeroSprite* background2;
 
+	ZeroSprite* HBForeground;
+	ZeroSprite* HBFill;
+
 	ZeroAnimation* explosion;
 
 	ZeroFont* scoreText;
@@ -73,13 +76,13 @@ private:
 	void EnemyShooting(float eTime); 
 	void SpawnEnemy(float eTime);
 	void SpawnItem(float eTime);
-	void SpawnBoss();
 	void EnemyDeath();
 	void PlayerDamaged();
 	void PlayerDead();
 	void Explosion(Enemy* e);
 	void Explosion(PlayerCharacter* p);
 	void Scoring(Enemy* e);
+	void SelfHeal();
 	void AutoScoring();
 	void BulletSpeedUp(float eTime);
 	void EatItem();

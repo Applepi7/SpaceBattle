@@ -43,7 +43,7 @@ void PlayerCharacter::Input(float eTime)
 			AddPosX(-150 * eTime);
 		}
 	}
-	if (Pos().y < 950 - player->Height()) {
+	if (Pos().y < 950 - player->Height() - 100) {
 		if (ZeroInputMgr->GetKey(VK_DOWN) == INPUTMGR_KEYON) {
 			AddPosY(150 * eTime);
 		}
