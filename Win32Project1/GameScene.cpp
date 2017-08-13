@@ -38,6 +38,8 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	ZeroSoundMgr->PushSound("Resource/Sound/pShooting.wav", "pShootingSound");
 	ZeroSoundMgr->PushSound("Resource/Sound/Explosion.wav", "explosionSound");
 	ZeroSoundMgr->PushSound("Resource/Sound/playerdamage.wav", "playerDamageSound");
+	ZeroSoundMgr->PushSound("Resource/Sound/playerHeal.wav", "playerHealSound");
+	ZeroSoundMgr->PushSound("Resource/Sound/playerSpeedUp.wav", "playerSpeedUpSound");
 
 	//ZeroSoundMgr->Play("bgm");
 }
@@ -428,9 +430,13 @@ void GameScene::EatItem()
 			if ((*item)->iTYPE == HEALPACK) {
 				p->health += 30;
 				HBFill->AddScaleX(0.3f);
+				ZeroSoundMgr->Play("playerHealSound");
 			}
-			else if ((*item)->iTYPE == SPEEDUP)
+			else if ((*item)->iTYPE == SPEEDUP) {
 				isSpeedUp = true;
+				ZeroSoundMgr->Play("playerSpeedUpSound");
+
+			}
 
 			itemList.erase(item++);
 			PopScene(*item);
