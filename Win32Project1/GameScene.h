@@ -51,15 +51,17 @@ private:
 	pair<float, float> enemyShootingT;
 	pair<float, float> EspawnTimer;
 	pair<float, float> IspawnTimer;
-	
+	pair<float, float> speedUpT;
+
 
 	bool isPAlive;
 	bool isDistanceRender;
+	bool isSpeedUp;
 
 	int meter;
 	int score;
 
-	float randomINT;
+	int randomINT;
 
 	void Update(float eTime) override;
 	void Render() override;
@@ -79,7 +81,7 @@ private:
 	void Explosion(PlayerCharacter* p);
 	void Scoring(Enemy* e);
 	void AutoScoring();
-	void BulletSpeedUp();
+	void BulletSpeedUp(float eTime);
 	void EatItem();
 	void ShowResult();
 	void CheckOut();

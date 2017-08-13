@@ -6,7 +6,7 @@
 #include "Global.h"
 
 
-Item::Item(int iTYPE) : speed(5.0f), movingTimer(0.0f, 3.0f), destroyTimer(0.0f, 10.0f), isDestroy(false)
+Item::Item(int iTYPE) : speed(5.0f), movingTimer(0.0f, 3.0f), destroyTimer(0.0f, 5.0f), isDestroy(false)
 {
 	if (iTYPE == 0) {
 		item = new ZeroSprite("Resource/Item/healpack.png");
@@ -25,6 +25,7 @@ void Item::Update(float eTime)
 	ZeroIScene::Update(eTime);
 	item->Update(eTime);
 
+	AutoDestroy(eTime);
 	Moving(eTime);
 }
 

@@ -7,7 +7,7 @@
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 15.0f), isPAlive(true), isDistanceRender(false), meter(1), score(0)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 15.0f), isPAlive(true), isDistanceRender(false), isSpeedUp(false), meter(1), score(0), speedUpT(0.0f, 3.0f)
 {
 	p = new PlayerCharacter();
 
@@ -54,6 +54,7 @@ void GameScene::Update(float eTime)
 
 	p->Update(eTime);
 
+	BulletSpeedUp(eTime);
 
 	if (isPAlive) {
 		meter += 1;
@@ -77,8 +78,16 @@ void GameScene::Update(float eTime)
 		EatItem();
 	}
 
+	for (auto item = itemList.begin(); item != itemList.end();) {
+		if ((*item)->isDestroy) {
+			itemList.erase(item++);
+			PopScene(*item);
+		}
+		item++;
+	}
+
 	if (meter % 500 == 0) {
-		if (EspawnTimer.second >= 1.0f) {
+		if (EspawnTimer.second >= 1.5f) {
 			EspawnTimer.second -= 0.5f;
 		}
 	}
@@ -251,14 +260,6 @@ void GameScene::SpawnItem(float eTime)
 
 		IspawnTimer.first = 0;
 	}
-
-	/*for(auto i = itemList.begin(); i != itemList.end();){
-	if (IspawnTimer.first >= -1) {
-	PopScene(*i);
-	itemList.erase(i++);
-	IspawnTimer.first = 0;
-	}
-	}*/
 }
 
 void GameScene::SpawnBoss()
@@ -387,9 +388,18 @@ void GameScene::AutoScoring()
 	}
 }
 
-void GameScene::BulletSpeedUp()
+void GameScene::BulletSpeedUp(float eTime)
 {
-	
+	if (isSpeedUp) {
+		speedUpT.first += eTime;
+		if (speedUpT.first <= speedUpT.second)
+			playerShootingT.second = 0.1f;
+		else {
+			playerShootingT.second = 0.5f;
+			speedUpT.first = 0;
+			isSpeedUp = false;
+		}
+	}
 }
 
 void GameScene::EatItem()
@@ -399,7 +409,7 @@ void GameScene::EatItem()
 			if ((*item)->iTYPE == HEALPACK)
 				p->health += 30;
 			else if ((*item)->iTYPE == SPEEDUP)
-				playerShootingT.second = 0.1f;
+				isSpeedUp = true;
 
 			itemList.erase(item++);
 			PopScene(*item);
@@ -407,14 +417,6 @@ void GameScene::EatItem()
 			item++;
 		}
 		else item++;
-	}
-
-	for (auto item = itemList.begin(); item != itemList.end();) {
-		if ((*item)->isDestroy) {
-			itemList.erase(item++);
-			PopScene(*item);
-		}
-		item++;
 	}
 }
 
