@@ -35,10 +35,14 @@ private:
 	ZeroSprite* HBForeground;
 	ZeroSprite* HBFill;
 
+	ZeroSprite* gameover;
+
 	ZeroAnimation* explosion;
 
 	ZeroFont* scoreText;
 	ZeroFont* distanceText;
+	ZeroFont* finalscoreText;
+	ZeroFont* finaldistanceText;
 
 	PlayerCharacter* p;
 	list<Enemy*> enemyList;
@@ -56,12 +60,10 @@ private:
 	pair<float, float> IspawnTimer;
 	pair<float, float> speedUpT;
 
-
-	bool isPAlive;
 	bool isDistanceRender;
 	bool isSpeedUp;
 
-	int meter;
+	int distance;
 	int score;
 
 	int randomINT;
@@ -86,7 +88,7 @@ private:
 	void AutoScoring();
 	void BulletSpeedUp(float eTime);
 	void EatItem();
-	void ShowResult();
+	void SetResultText();
 	void CheckOut();
 	void MovingBackground(float eTime);
 	void ShowDistance();

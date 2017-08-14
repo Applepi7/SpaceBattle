@@ -19,6 +19,8 @@ public:
 
 	float health;
 
+	bool isAlive;
+
 	void Update(float eTime) override;
 	void Render() override;
 

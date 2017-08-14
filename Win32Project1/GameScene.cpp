@@ -7,7 +7,7 @@
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 15.0f), isPAlive(true), isDistanceRender(false), isSpeedUp(false), meter(1), score(0), speedUpT(0.0f, 3.0f)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 15.0f), isDistanceRender(false), isSpeedUp(false), distance(1), score(0), speedUpT(0.0f, 3.0f)
 {
 	p = new PlayerCharacter();
 
@@ -17,6 +17,8 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	HBForeground = new ZeroSprite("Resource/HealthBar/Foreground.png");
 	HBFill = new ZeroSprite("Resource/HealthBar/Fill.png");
 
+	gameover = new ZeroSprite("Resource/Text/gameover.png");
+
 	explosion = new ZeroAnimation(5.0f);
 	explosion->PushSprite("Resource/Explosion/explosion_8.png");
 	explosion->SetLooping(false);
@@ -25,12 +27,20 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	scoreText = new ZeroFont(40, "");
 	distanceText = new ZeroFont(80, "");
 
+	finalscoreText = new ZeroFont(40, "");
+	finaldistanceText = new ZeroFont(40, "");
+
 	background2->SetPos(background1->Pos().x, background1->Pos().y + background1->Height());
 	
 	HBForeground->SetPosY(950 - HBForeground->Height());
 	HBFill->SetPos(23, 883);
 	scoreText->SetPos(480, 50);
 	distanceText->SetPos(260, 200);
+
+	finalscoreText->SetPos(250, 360 + gameover->Height());
+	finaldistanceText->SetPos(250, finalscoreText->Pos().y + 70);
+
+	gameover->SetPos(170, 350);
 
 	PushScene(p);
 
@@ -41,7 +51,7 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	ZeroSoundMgr->PushSound("Resource/Sound/playerHeal.wav", "playerHealSound");
 	ZeroSoundMgr->PushSound("Resource/Sound/playerSpeedUp.wav", "playerSpeedUpSound");
 
-	//ZeroSoundMgr->Play("bgm");
+	ZeroSoundMgr->Play("bgm");
 }
 
 void GameScene::Update(float eTime)
@@ -52,6 +62,9 @@ void GameScene::Update(float eTime)
 
 	HBForeground->Update(eTime);
 	HBFill->Update(eTime);
+
+	finalscoreText->Update(eTime);
+	finaldistanceText->Update(eTime);
 
 	UpdateBulletLists(eTime);
 
@@ -67,14 +80,14 @@ void GameScene::Update(float eTime)
 
 	BulletSpeedUp(eTime);
 
-	if (isPAlive) {
-		meter += 1;
+	if (p->isAlive) {
+		distance += 1;
 
 		distanceText->Update(eTime);
 		explosion->Update(eTime);
 
 		scoreText->SetString("SCORE : " + to_string(score));
-		distanceText->SetString(to_string(meter / 500 * 500) + "m");
+		distanceText->SetString(to_string(distance / 500 * 500) + "km");
 
 		MovingBackground(eTime);
 
@@ -98,7 +111,7 @@ void GameScene::Update(float eTime)
 		item++;
 	}
 
-	if (meter % 500 == 0) {
+	if (distance % 500 == 0) {
 		if (EspawnTimer.second >= 1.5f) {
 			EspawnTimer.second -= 0.5f;
 		}
@@ -128,14 +141,20 @@ void GameScene::Render()
 	}
 	p->Render();
 
-	if (isPAlive) {
+	finaldistanceText->Render();
+	finalscoreText->Render();
+
+	if (p->isAlive) {
 		HBForeground->Render();
 		HBFill->Render();
+
+		scoreText->Render();
 		if (isDistanceRender)
 			distanceText->Render();
 	}
+	else
+		gameover->Render();
 
-	scoreText->Render();
 }
 
 void GameScene::UpdateBulletLists(float eTime)
@@ -344,10 +363,11 @@ void GameScene::PlayerDamaged()
 
 void GameScene::PlayerDead()
 {
+	p->isAlive = false;
+
 	Explosion(p);
 	PopScene(p);
-
-	isPAlive = false;
+	SetResultText();
 }
 
 void GameScene::Explosion(Enemy* e)
@@ -404,7 +424,7 @@ void GameScene::SelfHeal()
 
 void GameScene::AutoScoring()
 {
-	if (meter % 5 == 0) {
+	if (distance % 5 == 0) {
 		score += 1;
 	}
 }
@@ -435,7 +455,6 @@ void GameScene::EatItem()
 			else if ((*item)->iTYPE == SPEEDUP) {
 				isSpeedUp = true;
 				ZeroSoundMgr->Play("playerSpeedUpSound");
-
 			}
 
 			itemList.erase(item++);
@@ -447,8 +466,10 @@ void GameScene::EatItem()
 	}
 }
 
-void GameScene::ShowResult()
+void GameScene::SetResultText()
 {
+	finalscoreText->SetString("Score : " + to_string(score));
+	finaldistanceText->SetString("Distance : " + to_string(distance) + "km");
 }
 
 void GameScene::CheckOut()
@@ -478,9 +499,9 @@ void GameScene::MovingBackground(float eTime)
 
 void GameScene::ShowDistance()
 {
-	int n = meter % 500;
+	int n = distance % 500;
 
-	if (meter >= 100 && ((n >= 0 && n <= 30) || (n >= 60 && n <= 90)))
+	if (distance >= 100 && ((n >= 0 && n <= 30) || (n >= 60 && n <= 90)))
 		isDistanceRender = true;
 	else
 		isDistanceRender = false;

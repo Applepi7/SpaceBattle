@@ -17,5 +17,8 @@ http://www.clker.com/clipart-circle-23.html23.html<br/>
 >폭발
 <br/>https://redsgamerants.tumblr.com/post/117414424232/explosion-research?is_related_post=1
 
+>게임오버
+<br/>https://jikoman.info/main/game-over-logo-png.ben
+
 >사운드
 <br/>https://freesound.org/

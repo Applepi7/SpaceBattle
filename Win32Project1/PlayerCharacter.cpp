@@ -4,7 +4,7 @@
 #include "ZeroInputManager.h"
 
 
-PlayerCharacter::PlayerCharacter() : health(100)
+PlayerCharacter::PlayerCharacter() : health(100), isAlive(true)
 {
 	player = new ZeroSprite("Resource/Player/Spaceship.png");
 	PushScene(player);
