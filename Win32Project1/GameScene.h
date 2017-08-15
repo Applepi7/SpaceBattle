@@ -48,26 +48,21 @@ private:
 	PlayerCharacter* p;
 	list<Enemy*> enemyList;
 
-	list<Bullet*> PbulletList;
 	list<Bullet*> E1bulletList;
 	list<Bullet*> E2bulletList;
 	list<Bullet*> E3bulletList;
 
 	list<Item*> itemList;
 
-	pair<float, float> playerShootingT;
 	pair<float, float> enemyShootingT;
 	pair<float, float> EspawnTimer;
 	pair<float, float> IspawnTimer;
-	pair<float, float> speedUpT;
 
 	bool isDistanceRender;
-	bool isSpeedUp;
-
-	int distance;
-	int score;
 
 	int randomINT;
+	int score;
+	int distance;
 
 	void Update(float eTime) override;
 	void Render() override;
@@ -75,7 +70,6 @@ private:
 	void UpdateBulletLists(float eTime);
 	void RenderBulletLists();
 
-	void PlayerShooting(float eTime);
 	void EnemyShooting(float eTime); 
 	void SpawnEnemy(float eTime);
 	void SpawnItem(float eTime);
@@ -87,7 +81,6 @@ private:
 	void Scoring(Enemy* e);
 	void SelfHeal();
 	void AutoScoring();
-	void BulletSpeedUp(float eTime);
 	void EatItem();
 	void SetResultText();
 	void CheckOut();
@@ -97,5 +90,6 @@ private:
 
 public:
 	GameScene();
+
 };
 

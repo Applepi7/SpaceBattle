@@ -11,7 +11,7 @@ Bullet::Bullet(int TYPE)
 		bullet1 = new ZeroSprite("Resource/Bullet/playerB.png");
 		bullet2 = new ZeroSprite("Resource/Bullet/playerB.png");
 		this->TYPE = TYPE;
-		bulletSpeed = -500;
+		bulletSpeed = -400;
 		break;
 	case 1:		// ENEMY_1
 		bullet1 = new ZeroSprite("Resource/Bullet/enemy01B.png");

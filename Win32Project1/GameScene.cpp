@@ -9,7 +9,7 @@
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 10.0f), isDistanceRender(false), isSpeedUp(false), distance(1), score(0), speedUpT(0.0f, 3.0f)
+GameScene::GameScene() : enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 10.0f), isDistanceRender(false), distance(1), score(0)
 {
 	p = new PlayerCharacter();
 
@@ -86,7 +86,6 @@ void GameScene::Update(float eTime)
 
 	p->Update(eTime);
 
-	BulletSpeedUp(eTime);
 
 	if (p->isAlive) {
 		distance += 1;
@@ -99,7 +98,6 @@ void GameScene::Update(float eTime)
 
 		MovingBackground(eTime);
 
-		PlayerShooting(eTime);
 		SelfHeal();
 		EnemyShooting(eTime);
 		SpawnEnemy(eTime);
@@ -155,10 +153,6 @@ void GameScene::Render()
 	}
 	p->Render();
 
-	finaldistanceText->Render();
-	finalscoreText->Render();
-
-	restartText->Render();
 
 	if (p->isAlive) {
 		HBForeground->Render();
@@ -168,16 +162,16 @@ void GameScene::Render()
 		if (isDistanceRender)
 			distanceText->Render();
 	}
-	else
+	else {
 		gameover->Render();
-
+		finaldistanceText->Render();
+		finalscoreText->Render();
+		restartText->Render();
+	}
 }
 
 void GameScene::UpdateBulletLists(float eTime)
 {
-	for (auto b : PbulletList) {
-		b->Update(eTime);
-	}
 	for (auto e1B : E1bulletList) {
 		e1B->Update(eTime);
 	}
@@ -191,9 +185,6 @@ void GameScene::UpdateBulletLists(float eTime)
 
 void GameScene::RenderBulletLists()
 {
-	for (auto pB : PbulletList) {
-		pB->Render();
-	}
 	for (auto eB : E1bulletList) {
 		eB->Render();
 	}
@@ -202,25 +193,6 @@ void GameScene::RenderBulletLists()
 	}
 	for (auto eB : E3bulletList) {
 		eB->Render();
-	}
-}
-
-void GameScene::PlayerShooting(float eTime)
-{
-	playerShootingT.first += eTime;
-
-	if (playerShootingT.first >= playerShootingT.second) {
-		Bullet* b = new Bullet(0);
-
-		b->bullet1->SetPos(p->Pos().x, p->Pos().y + 10);
-		b->bullet2->SetPos(p->Pos().x + 80, p->Pos().y + 10);
-
-		ZeroSoundMgr->Play("pShootingSound");
-
-		PbulletList.push_back(b);
-		PushScene(b);
-
-		playerShootingT.first = 0;
 	}
 }
 
@@ -314,7 +286,7 @@ void GameScene::SpawnItem(float eTime)
 void GameScene::EnemyDeath()
 {
 	for (auto e = enemyList.begin(); e != enemyList.end();) {
-		for (auto b = PbulletList.begin(); b != PbulletList.end();) {
+		for (auto b = p->bulletList.begin(); b != p->bulletList.end();) {
 			if ((*e)->enemy->IsOverlapped((*b)->bullet1) || (*e)->enemy->IsOverlapped((*b)->bullet2)) {
 
 				(*e)->isEAlive = false;
@@ -326,13 +298,13 @@ void GameScene::EnemyDeath()
 				PopScene(*b);
 
 				enemyList.erase(e++);
-				PbulletList.erase(b++);
-				if (b == PbulletList.end()) break;
+				p->bulletList.erase(b++);
+				if (b == p->bulletList.end()) break;
 				if (e == enemyList.end()) break;
 			}
 			else {
 				b++;
-				if (b == PbulletList.end()) break;
+				if (b == p->bulletList.end()) break;
 			}
 		}
 		e++;
@@ -445,20 +417,6 @@ void GameScene::AutoScoring()
 	}
 }
 
-void GameScene::BulletSpeedUp(float eTime)
-{
-	if (isSpeedUp) {
-		speedUpT.first += eTime;
-		if (speedUpT.first <= speedUpT.second)
-			playerShootingT.second = 0.1f;
-		else {
-			playerShootingT.second = 0.5f;
-			speedUpT.first = 0;
-			isSpeedUp = false;
-		}
-	}
-}
-
 void GameScene::EatItem()
 {
 	for (auto item = itemList.begin(); item != itemList.end();) {
@@ -469,7 +427,7 @@ void GameScene::EatItem()
 				ZeroSoundMgr->Play("playerHealSound");
 			}
 			else if ((*item)->iTYPE == SPEEDUP) {
-				isSpeedUp = true;
+				p->isSpeedUp = true;
 				ZeroSoundMgr->Play("playerSpeedUpSound");
 			}
 
@@ -490,14 +448,31 @@ void GameScene::SetResultText()
 
 void GameScene::CheckOut()
 {
-	for (auto pb = PbulletList.begin(); pb != PbulletList.end();) {
 
-		if ((*pb)->Pos().y < 0) {
-			PopScene(*pb);
-			PbulletList.erase(pb++);
+	for (auto eB = E1bulletList.begin(); eB != E1bulletList.end();) {
+		if ((*eB)->Pos().y > 950) {
+			PopScene(*eB);
+			E1bulletList.erase(eB++);
 		}
-		else pb++;
+		eB++;
 	}
+
+	for (auto eB = E2bulletList.begin(); eB != E2bulletList.end();) {
+		if ((*eB)->Pos().y > 950) {
+			PopScene(*eB);
+			E2bulletList.erase(eB++);
+		}
+		eB++;
+	}
+
+	for (auto eB = E2bulletList.begin(); eB != E2bulletList.end();) {
+		if ((*eB)->Pos().y > 950) {
+			PopScene(*eB);
+			E2bulletList.erase(eB++);
+		}
+		eB++;
+	}
+
 }
 
 void GameScene::MovingBackground(float eTime)
@@ -510,7 +485,6 @@ void GameScene::MovingBackground(float eTime)
 	if (background2->Pos().y + background2->Height() <= 0) {
 		background2->SetPosY(background1->Pos().y + background2->Height());
 	}
-
 }
 
 void GameScene::ShowDistance()
