@@ -43,6 +43,7 @@ private:
 	ZeroFont* distanceText;
 	ZeroFont* finalscoreText;
 	ZeroFont* finaldistanceText;
+	ZeroFont* restartText;
 
 	PlayerCharacter* p;
 	list<Enemy*> enemyList;
@@ -92,6 +93,7 @@ private:
 	void CheckOut();
 	void MovingBackground(float eTime);
 	void ShowDistance();
+	void Restart();
 
 public:
 	GameScene();

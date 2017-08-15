@@ -35,7 +35,7 @@ void TitleScene::Update(float eTime)
 
 void TitleScene::Render()
 {
-	background1->Render();
+	background1->Render();	
 	background2->Render();
 	title->Render();
 	enterText->Render();

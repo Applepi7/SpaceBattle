@@ -1,12 +1,10 @@
 ﻿  GameScene.cpp
-GameScene.cpp(270): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Item.cpp
+GameScene.cpp(286): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   PlayerCharacter.cpp
-  TitleScene.cpp
   코드를 생성하고 있습니다.
-  12 of 1874 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
+  2 of 1890 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+    2 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
 ZeroEngine-Release.lib(ZeroIScene.obj) : warning LNK4099: 'ZeroEngine.pdb' PDB를 'ZeroEngine-Release.lib(ZeroIScene.obj)' 또는 'D:\NewGarden\GardenProject\UseZeroEngine\SpaceBattle\Release\ZeroEngine.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
 ZeroEngine-Release.lib(ZeroSprite.obj) : warning LNK4099: 'ZeroEngine.pdb' PDB를 'ZeroEngine-Release.lib(ZeroSprite.obj)' 또는 'D:\NewGarden\GardenProject\UseZeroEngine\SpaceBattle\Release\ZeroEngine.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
@@ -15,7 +13,6 @@ ZeroEngine-Release.lib(ZeroFont.obj) : warning LNK4099: 'ZeroEngine.pdb' PDB를 
 ZeroEngine-Release.lib(ZeroSoundManager.obj) : warning LNK4099: 'ZeroEngine.pdb' PDB를 'ZeroEngine-Release.lib(ZeroSoundManager.obj)' 또는 'D:\NewGarden\GardenProject\UseZeroEngine\SpaceBattle\Release\ZeroEngine.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
 ZeroEngine-Release.lib(ZeroInputManager.obj) : warning LNK4099: 'ZeroEngine.pdb' PDB를 'ZeroEngine-Release.lib(ZeroInputManager.obj)' 또는 'D:\NewGarden\GardenProject\UseZeroEngine\SpaceBattle\Release\ZeroEngine.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
 ZeroEngine-Release.lib(ZeroSceneManager.obj) : warning LNK4099: 'ZeroEngine.pdb' PDB를 'ZeroEngine-Release.lib(ZeroSceneManager.obj)' 또는 'D:\NewGarden\GardenProject\UseZeroEngine\SpaceBattle\Release\ZeroEngine.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
-ZeroEngine-Release.lib(ZeroConsole.obj) : warning LNK4099: 'ZeroEngine.pdb' PDB를 'ZeroEngine-Release.lib(ZeroConsole.obj)' 또는 'D:\NewGarden\GardenProject\UseZeroEngine\SpaceBattle\Release\ZeroEngine.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
 ZeroEngine-Release.lib(ZeroApplication.obj) : warning LNK4099: 'ZeroEngine.pdb' PDB를 'ZeroEngine-Release.lib(ZeroApplication.obj)' 또는 'D:\NewGarden\GardenProject\UseZeroEngine\SpaceBattle\Release\ZeroEngine.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
 ZeroEngine-Release.lib(stdafx.obj) : warning LNK4099: 'ZeroEngine.pdb' PDB를 'ZeroEngine-Release.lib(stdafx.obj)' 또는 'D:\NewGarden\GardenProject\UseZeroEngine\SpaceBattle\Release\ZeroEngine.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
 ZeroEngine-Release.lib(ZeroMathManager.obj) : warning LNK4099: 'ZeroEngine.pdb' PDB를 'ZeroEngine-Release.lib(ZeroMathManager.obj)' 또는 'D:\NewGarden\GardenProject\UseZeroEngine\SpaceBattle\Release\ZeroEngine.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.

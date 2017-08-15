@@ -2,12 +2,14 @@
 #include "GameScene.h"
 
 #include "ZeroSoundManager.h"
+#include "ZeroInputManager.h"
+#include "ZeroSceneManager.h"
 
 #include "Global.h"
 
 
 
-GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 15.0f), isDistanceRender(false), isSpeedUp(false), distance(1), score(0), speedUpT(0.0f, 3.0f)
+GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 10.0f), isDistanceRender(false), isSpeedUp(false), distance(1), score(0), speedUpT(0.0f, 3.0f)
 {
 	p = new PlayerCharacter();
 
@@ -30,6 +32,8 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	finalscoreText = new ZeroFont(40, "");
 	finaldistanceText = new ZeroFont(40, "");
 
+	restartText = new ZeroFont(30, "");
+
 	background2->SetPos(background1->Pos().x, background1->Pos().y + background1->Height());
 	
 	HBForeground->SetPosY(950 - HBForeground->Height());
@@ -38,7 +42,9 @@ GameScene::GameScene() : playerShootingT(0.f, 0.5f), enemyShootingT(0.f, 0.5f), 
 	distanceText->SetPos(260, 200);
 
 	finalscoreText->SetPos(250, 360 + gameover->Height());
-	finaldistanceText->SetPos(250, finalscoreText->Pos().y + 70);
+	finaldistanceText->SetPos(250, finalscoreText->Pos().y + 50);
+
+	restartText->SetPos(250, 800);
 
 	gameover->SetPos(170, 350);
 
@@ -65,6 +71,8 @@ void GameScene::Update(float eTime)
 
 	finalscoreText->Update(eTime);
 	finaldistanceText->Update(eTime);
+
+	restartText->Update(eTime);
 
 	UpdateBulletLists(eTime);
 
@@ -102,6 +110,11 @@ void GameScene::Update(float eTime)
 
 		EatItem();
 	}
+	else {
+		PopScene(distanceText);
+		ZeroSoundMgr->PopSound("bgm");
+		restartText->SetString("Press Enter To Restart");
+	}
 
 	for (auto item = itemList.begin(); item != itemList.end();) {
 		if ((*item)->isDestroy) {
@@ -117,6 +130,7 @@ void GameScene::Update(float eTime)
 		}
 	}
 
+	Restart();
 	EnemyDeath();
 	CheckOut();
 }
@@ -143,6 +157,8 @@ void GameScene::Render()
 
 	finaldistanceText->Render();
 	finalscoreText->Render();
+
+	restartText->Render();
 
 	if (p->isAlive) {
 		HBForeground->Render();
@@ -505,4 +521,13 @@ void GameScene::ShowDistance()
 		isDistanceRender = true;
 	else
 		isDistanceRender = false;
+}
+
+void GameScene::Restart()
+{
+	if (!p->isAlive) {
+		if (ZeroInputMgr->GetKey(VK_RETURN) == INPUTMGR_KEYON) {
+			ZeroSceneMgr->ChangeScene(new GameScene());
+		}
+	}
 }
