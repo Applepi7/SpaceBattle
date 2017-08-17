@@ -34,7 +34,6 @@ public:
 	bool isAlive;
 
 	void BulletSpeedUp(float eTime);
-	void AutoScoring();
 
 	void Update(float eTime) override;
 	void Render() override;

@@ -6,6 +6,7 @@
 
 #include "PlayerCharacter.h"
 #include "Enemy.h"
+#include "Boss.h"
 #include "Bullet.h"
 #include "Item.h"
 
@@ -46,6 +47,7 @@ private:
 	ZeroFont* restartText;
 
 	PlayerCharacter* p;
+	Boss* b;
 	list<Enemy*> enemyList;
 
 	list<Bullet*> E1bulletList;
@@ -73,6 +75,7 @@ private:
 	void EnemyShooting(float eTime); 
 	void SpawnEnemy(float eTime);
 	void SpawnItem(float eTime);
+	void SpawnBoss();
 	void EnemyDeath();
 	void PlayerDamaged();
 	void PlayerDead();

@@ -9,9 +9,10 @@
 
 
 
-GameScene::GameScene() : enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 10.0f), isDistanceRender(false), distance(1), score(0)
+GameScene::GameScene() : enemyShootingT(0.0f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 10.0f), isDistanceRender(false), distance(4500), score(0)
 {
 	p = new PlayerCharacter();
+	b = new Boss();
 
 	background1 = new ZeroSprite("Resource/Background/space.png");
 	background2 = new ZeroSprite("Resource/Background/space.png");
@@ -49,6 +50,7 @@ GameScene::GameScene() : enemyShootingT(0.f, 0.5f), EspawnTimer(0.0f, 3.0f), Isp
 	gameover->SetPos(170, 350);
 
 	PushScene(p);
+	PushScene(b);
 
 	ZeroSoundMgr->PushSound("Resource/Sound/bgm_1.wav", "bgm");
 	ZeroSoundMgr->PushSound("Resource/Sound/pShooting.wav", "pShootingSound");
@@ -85,7 +87,10 @@ void GameScene::Update(float eTime)
 	}
 
 	p->Update(eTime);
+	b->Update(eTime);
 
+	if (distance == 5000)
+		SpawnBoss();
 
 	if (p->isAlive) {
 		distance += 1;
@@ -152,7 +157,7 @@ void GameScene::Render()
 		e->Render();
 	}
 	p->Render();
-
+	b->Render();
 
 	if (p->isAlive) {
 		HBForeground->Render();
@@ -281,6 +286,10 @@ void GameScene::SpawnItem(float eTime)
 
 		IspawnTimer.first = 0;
 	}
+}
+
+void GameScene::SpawnBoss()
+{
 }
 
 void GameScene::EnemyDeath()
@@ -415,7 +424,7 @@ void GameScene::AutoScoring()
 	if (distance % 5 == 0) {
 		score += 1;
 	}
-}
+}	
 
 void GameScene::EatItem()
 {
@@ -473,6 +482,13 @@ void GameScene::CheckOut()
 		eB++;
 	}
 
+	for (auto e = enemyList.begin(); e != enemyList.end();) {
+		if ((*e)->Pos().y > 950) {
+			PopScene(*e);
+			enemyList.erase(e++);
+		}
+		e++;
+	}
 }
 
 void GameScene::MovingBackground(float eTime)
