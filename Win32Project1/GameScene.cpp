@@ -9,7 +9,7 @@
 
 
 
-GameScene::GameScene() : enemyShootingT(0.0f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 10.0f), isDistanceRender(false), distance(4500), score(0)
+GameScene::GameScene() : enemyShootingT(0.0f, 0.5f), EspawnTimer(0.0f, 3.0f), IspawnTimer(0.0f, 10.0f), isDistanceRender(false), distance(7000), score(0)
 {
 	p = new PlayerCharacter();
 	b = new Boss();
@@ -89,8 +89,7 @@ void GameScene::Update(float eTime)
 	p->Update(eTime);
 	b->Update(eTime);
 
-	if (distance == 5000)
-		SpawnBoss();
+	BossDamaged();
 
 	if (p->isAlive) {
 		distance += 1;
@@ -149,15 +148,21 @@ void GameScene::Render()
 
 	RenderBulletLists();
 
+	if (distance >= 5000) {
+		b->Render();
+		b->isAlive = true;
+		EspawnTimer.second = 2.0f;
+	}
+
 	for (auto i : itemList) {
 		i->Render();
 	}
+
 
 	for (auto e : enemyList) {
 		e->Render();
 	}
 	p->Render();
-	b->Render();
 
 	if (p->isAlive) {
 		HBForeground->Render();
@@ -288,10 +293,6 @@ void GameScene::SpawnItem(float eTime)
 	}
 }
 
-void GameScene::SpawnBoss()
-{
-}
-
 void GameScene::EnemyDeath()
 {
 	for (auto e = enemyList.begin(); e != enemyList.end();) {
@@ -333,6 +334,7 @@ void GameScene::PlayerDamaged()
 		}
 		else e1B++;
 	}
+
 	for (auto e2B = E2bulletList.begin(); e2B != E2bulletList.end();) {
 		if (p->player->IsOverlapped((*e2B)->bullet1) || p->player->IsOverlapped((*e2B)->bullet2 || p->player->IsOverlapped((*e2B)->bullet3))) {
 			p->health -= 20;
@@ -343,9 +345,10 @@ void GameScene::PlayerDamaged()
 		}
 		else e2B++;
 	}
+
 	for (auto e3B = E3bulletList.begin(); e3B != E3bulletList.end();) {
 		if (p->player->IsOverlapped((*e3B)->bullet1)) {
-			p->health -= 50;
+			p->health -= 40;
 			HBFill->AddScaleX(-0.5f);
 			ZeroSoundMgr->Play("playerDamageSound");
 			PopScene(*e3B);
@@ -354,8 +357,36 @@ void GameScene::PlayerDamaged()
 		else e3B++;
 	}
 
+	for (auto bullet = b->bulletList.begin(); bullet != b->bulletList.end();) {
+		if (p->player->IsOverlapped((*bullet)->bullet1) || p->player->IsOverlapped((*bullet)->bullet2) || p->player->IsOverlapped((*bullet)->bullet3) || p->player->IsOverlapped((*bullet)->bullet4) || p->player->IsOverlapped((*bullet)->bullet5)) {
+			p->health -= 15;
+			HBFill->AddScaleX(-0.15);
+			ZeroSoundMgr->Play("playerDamageSound");
+			PopScene((*bullet)->bullet3);
+			b->bulletList.erase(bullet++);
+		}
+		else bullet++;
+	}
 
 	if (p->health <= 0) PlayerDead();
+}
+
+void GameScene::BossDamaged()
+{
+	for (auto pb = p->bulletList.begin(); pb != p->bulletList.end(); ) {
+		if ((*pb)->bullet1->IsOverlapped(b) || (*pb)->bullet2->IsOverlapped(b)) {
+			b->health -= 50;
+			PopScene(*pb);
+			p->bulletList.erase(pb++);
+		
+			if (pb == p->bulletList.end()) break;
+		}
+
+		pb++;
+		if (pb == p->bulletList.end()) break;
+	}
+
+	if (b->health <= 0) b->Death();
 }
 
 void GameScene::PlayerDead()
@@ -364,6 +395,9 @@ void GameScene::PlayerDead()
 
 	Explosion(p);
 	PopScene(p);
+	/* PopScene(HBForeground);
+	PopScene(HBFill);
+	PopScene(scoreText); */
 	SetResultText();
 }
 
@@ -457,7 +491,6 @@ void GameScene::SetResultText()
 
 void GameScene::CheckOut()
 {
-
 	for (auto eB = E1bulletList.begin(); eB != E1bulletList.end();) {
 		if ((*eB)->Pos().y > 950) {
 			PopScene(*eB);

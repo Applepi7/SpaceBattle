@@ -15,7 +15,6 @@ private:
 
 public:
 	Bullet(int TYPE);
-	~Bullet();
 
 	void Update(float eTime) override;
 	void Render() override;
@@ -24,5 +23,7 @@ public:
 	ZeroSprite* bullet1;
 	ZeroSprite* bullet2;
 	ZeroSprite* bullet3;
+	ZeroSprite* bullet4;
+	ZeroSprite* bullet5;
 };
 

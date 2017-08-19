@@ -75,9 +75,9 @@ private:
 	void EnemyShooting(float eTime); 
 	void SpawnEnemy(float eTime);
 	void SpawnItem(float eTime);
-	void SpawnBoss();
 	void EnemyDeath();
 	void PlayerDamaged();
+	void BossDamaged();
 	void PlayerDead();
 	void Explosion(Enemy* e);
 	void Explosion(PlayerCharacter* p);

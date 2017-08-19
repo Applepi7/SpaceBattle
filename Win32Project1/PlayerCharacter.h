@@ -22,6 +22,7 @@ private:
 public:
 	PlayerCharacter();
 
+
 	ZeroSprite* player;
 
 	list<Bullet*> bulletList;
